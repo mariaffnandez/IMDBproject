@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class IMDbData {
 
@@ -71,4 +74,15 @@ public class IMDbData {
         }
         return integer;
     }
-}
+    public Collection<List<Movie>> partitionList(List<Movie> list){
+
+    int partitionSize = 200;
+
+    Collection<List<Movie>> partitionedList = IntStream.range(0, list.size())
+            .boxed()
+            .collect(Collectors.groupingBy(partition -> (partition / partitionSize), Collectors.mapping(elementIndex -> list.get(elementIndex), Collectors.toList())))
+            .values();
+    System.out.println("Partited list "+partitionedList.size());
+    return partitionedList;
+
+}}

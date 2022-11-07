@@ -6,6 +6,8 @@ import co.empathy.IMDBproject.Model.Movie;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.List;
 
 
 public class ElasticServiceImpl implements ElasticService {
@@ -35,7 +37,16 @@ public class ElasticServiceImpl implements ElasticService {
 
         System.out.println("Indexing "+multipartFile.getName());
         imdb= new IMDbData();
-        elasticEngine.indexMultipleDocs(indexName,imdb.readData(multipartFile));
+        //return all the data as a movie´s list
+        List<Movie> bigList= imdb.readData(multipartFile);
+        //divide the big list in smaller lists to index them
+        Collection<List<Movie>> partiList= imdb.partitionList(bigList);
+        for(List<Movie> list : partiList)
+        {
+
+            elasticEngine.indexMultipleDocs(indexName,list);
+        }
+
 
 
     }
