@@ -1,14 +1,18 @@
 package co.empathy.IMDBproject.Service;
 
+import co.empathy.IMDBproject.Help.IMDbData;
 import co.empathy.IMDBproject.Model.Movie;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
+
 
 public class ElasticServiceImpl implements ElasticService {
     private final ElasticEngine elasticEngine;
+    private final String indexName="imdb";
+
+    private IMDbData imdb;
 
     public ElasticServiceImpl(ElasticEngine searchEngine) {
         this.elasticEngine = searchEngine;
@@ -27,15 +31,20 @@ public class ElasticServiceImpl implements ElasticService {
     }
 
     @Override
-    public void indexData(MultipartFile multipartFile) throws IOException {
-        InputStream inputStream = multipartFile.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+    public void indexIMDBData(MultipartFile multipartFile) throws IOException {
 
-        String line;
-        while ((line = reader.readLine()) != null) {
+        System.out.println("Indexing "+multipartFile.getName());
+        imdb= new IMDbData();
+        elasticEngine.indexMultipleDocs(indexName,imdb.readData(multipartFile));
 
-        }
 
     }
+
+
+
+
+
+
+
 }
 

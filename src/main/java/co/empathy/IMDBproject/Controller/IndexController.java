@@ -17,7 +17,7 @@ import java.io.IOException;
 @RestController
 public class IndexController {
     @Autowired
-    private ElasticsearchClient client;
+
     private ElasticServiceImpl elasticService;
 
 
@@ -27,7 +27,7 @@ public class IndexController {
     }
 
     @GetMapping("/_cat/indices")
-    public ResponseEntity<String> showIndex() throws IOException, InterruptedException {
+    public ResponseEntity<String> showIndex() throws IOException{
 
         String indices= elasticService.listIndices();
         return new ResponseEntity<String>(indices, HttpStatus.OK);
@@ -58,8 +58,9 @@ public class IndexController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> indexDoc(@RequestParam("file") MultipartFile file) throws IOException {
-        elasticService.indexData(file);
-        return new ResponseEntity("what",HttpStatus.OK);
+
+        elasticService.indexIMDBData(file);
+        return new ResponseEntity("DONE",HttpStatus.OK);
     }
 
 

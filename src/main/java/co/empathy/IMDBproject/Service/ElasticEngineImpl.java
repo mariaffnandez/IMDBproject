@@ -3,6 +3,8 @@ package co.empathy.IMDBproject.Service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
+import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
@@ -14,6 +16,7 @@ import org.elasticsearch.xcontent.XContentType;
 
 
 import java.io.IOException;
+import java.util.List;
 
 public class ElasticEngineImpl implements ElasticEngine {
     private ElasticsearchClient client;
@@ -44,7 +47,7 @@ public class ElasticEngineImpl implements ElasticEngine {
             GetIndexRequest existReq = new GetIndexRequest(name);
             //boolean exists = client.indices().exists(request, RequestOptions.DEFAULT);
             CreateIndexRequest request = new CreateIndexRequest(name);
-            if (source!=null)
+            if (source != null)
                 request.source(source, XContentType.JSON);
             CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name));
 
@@ -57,23 +60,23 @@ public class ElasticEngineImpl implements ElasticEngine {
 
         }
     }
+
     @Override
     public Boolean indexDoc(String indexName, Movie movie) {
         try {
 
             GetResponse<Movie> existsResp = client.get(g -> g
                             .index(indexName)
-                            .id(movie.getId()),
+                            .id(movie.getTconst()),
                     Movie.class
             );
             //checks if the movie's id already exists
             if (existsResp.found()) {
                 return false;
-            }
-            else {
+            } else {
                 IndexResponse response = client.index(i -> i
                         .index(indexName)
-                        .id(movie.getId())
+                        .id(movie.getTconst())
                         .document(movie)
                 );
                 System.out.println("Indexed with version " + response.version());
@@ -85,6 +88,32 @@ public class ElasticEngineImpl implements ElasticEngine {
         } catch (ElasticsearchException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    @Override
+
+    public Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException {
+        BulkRequest.Builder br = new BulkRequest.Builder();
+
+        for (Movie movie : movies) {
+            br.operations(op -> op
+                    .index(idx -> idx
+                            .index(indexName)
+                            .id(movie.getTconst())
+                            .document(movie)
+                    )
+            );
+        }
+
+        BulkResponse result = client.bulk(br.build());
+
+
+        if (result.errors()) {
+            System.out.println("Bulk error indexing multiple docs");
+            return false;
+        } else return true;
+
 
     }
 }

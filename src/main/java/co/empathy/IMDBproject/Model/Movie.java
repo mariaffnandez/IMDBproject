@@ -1,17 +1,19 @@
 package co.empathy.IMDBproject.Model;
 
-import lombok.Value;
-import lombok.With;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 
-@Value
-@With
+
+
+@Data
+@NoArgsConstructor
+
+
 public class Movie {
 
     //Cannot use lists -> problems
-    String id;
+
     String tconst;
     String titleType;
     String primaryTitle;
@@ -20,13 +22,14 @@ public class Movie {
     int startYear;
     int endYear;
     int runtimeMinutes;
-    //List<String> genres;
     String genres;
+    /*
+    List<String> genres;
     double averageRating ;
     int numVotes;
     //List<String> akas;
-    //List<String> starring;
-
+    List<String> starring;
+    */
 
 
 }
