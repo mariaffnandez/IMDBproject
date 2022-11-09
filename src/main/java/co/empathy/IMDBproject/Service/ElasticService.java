@@ -14,5 +14,5 @@ public interface ElasticService {
 
     Boolean indexDoc(String indexName, Movie movie);
 
-    void indexIMDBData(MultipartFile multipartFile) throws IOException;
+    Boolean indexIMDBData(MultipartFile multipartFile) throws IOException;
 }

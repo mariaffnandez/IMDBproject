@@ -1,6 +1,6 @@
 package co.empathy.IMDBproject.Controller;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
+
 import co.empathy.IMDBproject.Model.Movie;
 
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
@@ -35,9 +35,9 @@ public class IndexController {
 
     //Creates a new index
     @PutMapping("/create/{indexName}")
-    public ResponseEntity createIndex(@PathVariable String indexName){
+    public ResponseEntity createIndex(@PathVariable String indexName,@RequestBody  String source){
 
-        if (elasticService.createIndex(indexName,null)){
+        if (elasticService.createIndex(indexName,source)){
 
             return new ResponseEntity(HttpStatus.CREATED);
         }
@@ -59,8 +59,8 @@ public class IndexController {
     @PostMapping("/upload")
     public ResponseEntity<String> indexDoc(@RequestParam("file") MultipartFile file) throws IOException {
 
-        elasticService.indexIMDBData(file);
-        return new ResponseEntity("DONE",HttpStatus.OK);
+        Boolean done=elasticService.indexIMDBData(file);
+        return new ResponseEntity(done,HttpStatus.OK);
     }
 
 
