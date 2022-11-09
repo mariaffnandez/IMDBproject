@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 public class Movie {
 
-    //Cannot use lists -> problems
+
 
     String tconst;
     String titleType;

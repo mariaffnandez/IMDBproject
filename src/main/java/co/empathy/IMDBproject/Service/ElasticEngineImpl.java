@@ -47,16 +47,23 @@ public class ElasticEngineImpl implements ElasticEngine {
             GetIndexRequest existReq = new GetIndexRequest(name);
             //boolean exists = client.indices().exists(request, RequestOptions.DEFAULT);
             CreateIndexRequest request = new CreateIndexRequest(name);
-            if (source != null)
-                request.source(source, XContentType.JSON);
+            if (source != null) {
+
+                //request.source(source,XContentType.JSON);
+
+                request.mapping(source,XContentType.JSON);
+
+
+            }
             CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name));
 
             return createIndexResponse.acknowledged();
 
 
         } catch (Exception e) {
+            //can not create de index
+            return false;
 
-            throw new RuntimeException(e);
 
         }
     }
@@ -94,28 +101,37 @@ public class ElasticEngineImpl implements ElasticEngine {
     @Override
 
     public Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException {
-        BulkRequest.Builder br = new BulkRequest.Builder();
+        try {
+            BulkRequest.Builder br = new BulkRequest.Builder();
 
-        for (Movie movie : movies) {
-            br.operations(op -> op
-                    .index(idx -> idx
-                            .index(indexName)
-                            .id(movie.getTconst())
-                            .document(movie)
-                    )
-            );
+            for (Movie movie : movies) {
+                br.operations(op -> op
+                        .index(idx -> idx
+                                .index(indexName)
+                                .id(movie.getTconst())
+                                .document(movie)
+                        )
+                );
+            }
+
+            BulkResponse result = client.bulk(br.build());
+
+
+            if (result.errors()) {
+                System.out.println("Bulk error indexing multiple docs");
+                return false;
+            } else return true;
+        } catch (IOException e) {
+
+            throw new RuntimeException(e);
+        } catch (ElasticsearchException e) {
+
+            throw new RuntimeException(e);
         }
-
-        BulkResponse result = client.bulk(br.build());
-
-
-        if (result.errors()) {
-            System.out.println("Bulk error indexing multiple docs");
-            return false;
-        } else return true;
 
 
     }
 }
+
 
 

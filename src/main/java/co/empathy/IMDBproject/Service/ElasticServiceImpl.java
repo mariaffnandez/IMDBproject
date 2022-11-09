@@ -6,13 +6,14 @@ import co.empathy.IMDBproject.Model.Movie;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class ElasticServiceImpl implements ElasticService {
     private final ElasticEngine elasticEngine;
-    private final String indexName="imdb";
+    private final String indexName="test";
+    int blockLines= 50000;
 
     private IMDbData imdb;
 
@@ -33,26 +34,50 @@ public class ElasticServiceImpl implements ElasticService {
     }
 
     @Override
-    public void indexIMDBData(MultipartFile multipartFile) throws IOException {
+    public Boolean indexIMDBData(MultipartFile multipartFile) throws IOException {
 
-        System.out.println("Indexing "+multipartFile.getName());
+        System.out.println("Reading "+multipartFile.getName());
         imdb= new IMDbData();
-        //return all the data as a movie´s list
-        List<Movie> bigList= imdb.readData(multipartFile);
-        //divide the big list in smaller lists to index them
-        Collection<List<Movie>> partiList= imdb.partitionList(bigList);
-        for(List<Movie> list : partiList)
-        {
+        List<Movie> movieList= new ArrayList<>();
+        try {
+            InputStream inputStream = multipartFile.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            elasticEngine.indexMultipleDocs(indexName,list);
+            //first line read (no movie's info)
+            String types=reader.readLine();
+
+            int countLines=0;
+            String readLine;
+            boolean moreLines=true;
+
+            while(moreLines){
+                readLine = reader.readLine();
+                //adds the movies to the list
+                imdb.moviesList(movieList,imdb.readMovieTitleBasicsLines(readLine));
+                countLines ++;
+                if (countLines==blockLines || readLine==null){
+                    elasticEngine.indexMultipleDocs(indexName,movieList);
+                    //prepare the next list
+                    countLines=0;
+                    movieList.clear();
+                    if (readLine==null)
+                        moreLines=false;
+                }
+            }
+            System.out.println("Indexed");
+            return true;
+
+
+
+        } catch (IOException e) {
+
+            return false;
         }
 
 
 
+
     }
-
-
-
 
 
 
