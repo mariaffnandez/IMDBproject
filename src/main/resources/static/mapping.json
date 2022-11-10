@@ -1,0 +1,37 @@
+{
+  "properties": {
+    "tconst": {
+      "type": "text"
+    },
+    "titleType": {
+      "type": "text"
+    },
+    "primaryTitle": {
+      "type": "text"
+    },
+    "originalTitle": {
+      "type": "text"
+    },
+    "isAdult": {
+      "type": "boolean"
+    },
+    "startYear": {
+      "type": "integer"
+    },
+    "endYear": {
+      "type": "integer"
+    },
+    "runtimeMinutes": {
+      "type": "integer"
+    },
+    "genres": {
+      "type": "text"
+    },
+    "averageRating": {
+      "type": "double"
+    },
+    "numVotes": {
+      "type": "integer"
+    }
+  }
+}
