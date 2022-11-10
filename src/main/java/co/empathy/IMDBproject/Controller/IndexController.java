@@ -21,47 +21,55 @@ public class IndexController {
     private ElasticServiceImpl elasticService;
 
 
-    public IndexController(ElasticServiceImpl elasticService){
+    public IndexController(ElasticServiceImpl elasticService) {
 
-        this.elasticService= elasticService;
+        this.elasticService = elasticService;
     }
 
     @GetMapping("/_cat/indices")
-    public ResponseEntity<String> showIndex() throws IOException{
+    public ResponseEntity<String> showIndex() throws IOException {
 
-        String indices= elasticService.listIndices();
+        String indices = elasticService.listIndices();
         return new ResponseEntity<String>(indices, HttpStatus.OK);
     }
 
     //Creates a new index
-    @PutMapping("/create/{indexName}")
-    public ResponseEntity createIndex(@PathVariable String indexName,@RequestBody  String source){
+    @PutMapping("/{indexName}")
+    public ResponseEntity createIndex(@PathVariable String indexName, @RequestBody String source) {
 
-        if (elasticService.createIndex(indexName,source)){
+        if (elasticService.createIndex(indexName, source)) {
 
             return new ResponseEntity(HttpStatus.CREATED);
-        }
-        else
+        } else
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     //index a single doc
     @PostMapping("/{indexName}/_doc")
     public ResponseEntity indexDoc(@PathVariable String indexName, @RequestBody Movie movie) throws IOException {
-        boolean created= elasticService.indexDoc(indexName, movie);
+        boolean created = elasticService.indexDoc(indexName, movie);
         if (created)
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(movie);
         else
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
     }
+    @DeleteMapping("/{indexName}")public ResponseEntity deleteIndex(@PathVariable String indexName) throws IOException {
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> indexDoc(@RequestParam("file") MultipartFile file) throws IOException {
-
-        Boolean done=elasticService.indexIMDBData(file);
-        return new ResponseEntity(done,HttpStatus.OK);
+        if( elasticService.deleteIndex(indexName))
+            return new ResponseEntity(HttpStatus.ACCEPTED);
+        else
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<String> indexDoc(@RequestParam("basics") MultipartFile basicsFile,@RequestParam("ratings") MultipartFile ratingFile) throws IOException {
 
+
+      // Boolean done=elasticService.indexIMDBTitleBasics(basicsFile);
+
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
 }
