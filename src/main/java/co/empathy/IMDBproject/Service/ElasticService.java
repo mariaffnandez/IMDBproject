@@ -20,5 +20,5 @@ public interface ElasticService {
    // Boolean indexIMDBRatings(MultipartFile multipartFile) throws IOException;
 
 
-    Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile) throws IOException;
+    Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile,MultipartFile akaFile) throws IOException;
 }

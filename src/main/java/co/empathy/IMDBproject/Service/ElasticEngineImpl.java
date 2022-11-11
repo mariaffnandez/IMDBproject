@@ -18,7 +18,6 @@ import org.elasticsearch.xcontent.XContentType;
 
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 
@@ -60,7 +59,7 @@ public class ElasticEngineImpl implements ElasticEngine {
 
             }
             CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name));
-
+            System.out.println("Created");
             return createIndexResponse.acknowledged();
 
 
@@ -77,6 +76,7 @@ public class ElasticEngineImpl implements ElasticEngine {
 
             DeleteIndexResponse deleteIndexResponse = client.indices().delete(c -> c.index(indexName));
             if (deleteIndexResponse.acknowledged()){
+                System.out.println("Deleted");
                 return true;
             }
             else{

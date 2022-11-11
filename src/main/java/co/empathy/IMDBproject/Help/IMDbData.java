@@ -2,29 +2,18 @@ package co.empathy.IMDBproject.Help;
 
 import co.empathy.IMDBproject.Model.Movie;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.multipart.MultipartFile;
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 public class IMDbData {
-    private MultipartFile basicsFile;
-    private MultipartFile ratingsFile;
-    public IMDbData(MultipartFile basicsFile, MultipartFile ratingsFile){
-        this.basicsFile=basicsFile;
-        this.ratingsFile=ratingsFile;
 
-    }
-
-
-    public Movie readMovieTitleBasicsLines(String line) {
+    public Movie setBasicsLines(String line) {
         Movie movie = new Movie();
         if (line != null) {
 
@@ -42,15 +31,16 @@ public class IMDbData {
         return movie;
     }
 
-    public void readMovieRatingsLines(String line, List<Movie> list) {
-        Movie movie = new Movie();
+    public void setRatings(String line, Movie movie) {
+
         if (line != null) {
+
             String[] fields = line.split("\t");
-            movie.setTconst(fields[0]);
             movie.setAverageRating(Double.parseDouble(fields[1]));
             movie.setNumVotes(Integer.parseInt(fields[2]));
-            list.add(movie);
+
         }
+
 
     }
 
@@ -75,21 +65,20 @@ public class IMDbData {
         }
         return integer;
     }
-
-    public BufferedReader reader(MultipartFile file) {
-        try {
-            InputStream inputStream = file.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            //read the first line (no useful info)
-            String types=reader.readLine();
-            return reader;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public boolean sameId(String line1, String line2){
+        boolean result= false;
+        if(line1!=null && line2!=null){
+            String id1 = line1.split("\t")[0];
+            String id2 = line2.split("\t")[0];
+            if (id1.equalsIgnoreCase(id2))
+                result = true;
         }
+        return result;
     }
 
+
     public String jsonMapping() throws IOException {
-        InputStream mappingInputStream = new ClassPathResource("mapping/mapping.json").getInputStream();
+        InputStream mappingInputStream = new ClassPathResource("static/mapping.json").getInputStream();
         return new String(mappingInputStream.readAllBytes(), UTF_8);
     }
 }

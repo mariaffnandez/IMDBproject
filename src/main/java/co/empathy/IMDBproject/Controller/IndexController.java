@@ -60,16 +60,20 @@ public class IndexController {
             return new ResponseEntity(HttpStatus.ACCEPTED);
         else
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> indexDoc(@RequestParam("basics") MultipartFile basicsFile,@RequestParam("ratings") MultipartFile ratingFile) throws IOException {
+    @PostMapping("/index")
+    public ResponseEntity<String> indexDoc(@RequestParam("basics") MultipartFile basicsFile,
+                                           @RequestParam("ratings") MultipartFile ratingFile,
+                                           @RequestParam("akas") MultipartFile akasFile
+
+                                           ) throws IOException {
 
 
-      // Boolean done=elasticService.indexIMDBTitleBasics(basicsFile);
+        Boolean done=elasticService.indexIMDBData(basicsFile,ratingFile,akasFile);
 
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
 }
