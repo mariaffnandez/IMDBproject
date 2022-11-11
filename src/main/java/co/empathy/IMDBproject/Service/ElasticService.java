@@ -11,8 +11,14 @@ public interface ElasticService {
     String listIndices() throws IOException;
 
     Boolean createIndex(String name, String source);
+     Boolean deleteIndex(String name);
 
     Boolean indexDoc(String indexName, Movie movie);
 
-    Boolean indexIMDBData(MultipartFile multipartFile) throws IOException;
+
+   // Boolean indexIMDBTitleBasics(MultipartFile multipartFile) throws IOException;
+   // Boolean indexIMDBRatings(MultipartFile multipartFile) throws IOException;
+
+
+    Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile,MultipartFile akaFile) throws IOException;
 }

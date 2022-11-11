@@ -9,6 +9,7 @@ import java.util.List;
 public interface ElasticEngine {
     String listIndices() throws IOException;
     Boolean createIndex(String name, String source);
+    Boolean deleteIndex(String name);
     Boolean indexDoc(String indexName, Movie movie);
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
 

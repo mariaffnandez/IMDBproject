@@ -23,12 +23,11 @@ public class Movie {
     int endYear;
     int runtimeMinutes;
     String genres;
-    /*
-    List<String> genres;
     double averageRating ;
     int numVotes;
-    //List<String> akas;
-    List<String> starring;
+    /*
+    //List<String> genres;
+
     */
 
 

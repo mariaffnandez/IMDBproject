@@ -1,5 +1,6 @@
 package co.empathy.IMDBproject.Service;
 
+import co.empathy.IMDBproject.Help.IMDBReader;
 import co.empathy.IMDBproject.Help.IMDbData;
 import co.empathy.IMDBproject.Model.Movie;
 
@@ -12,74 +13,76 @@ import java.util.List;
 
 public class ElasticServiceImpl implements ElasticService {
     private final ElasticEngine elasticEngine;
-    private final String indexName="test";
-    int blockLines= 50000;
+    private final String imdbIndex = "test";
 
-    private IMDbData imdb;
+    //number of movies that will be index together
+    int blockMovies = 50000;
+
+    private IMDBReader imdb;
+    public IMDbData data;
 
     public ElasticServiceImpl(ElasticEngine searchEngine) {
+
         this.elasticEngine = searchEngine;
+        this.data= new IMDbData();
     }
+
     @Override
     public String listIndices() throws IOException {
         return elasticEngine.listIndices();
     }
+
     @Override
     public Boolean createIndex(String name, String source) {
         return elasticEngine.createIndex(name, source);
     }
+
+    @Override
+    public Boolean deleteIndex(String name) {
+        return elasticEngine.deleteIndex(name);
+    }
+
     @Override
     public Boolean indexDoc(String indexName, Movie movie) {
         return elasticEngine.indexDoc(indexName, movie);
     }
 
+
     @Override
-    public Boolean indexIMDBData(MultipartFile multipartFile) throws IOException {
+    public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile) throws IOException {
+        imdb = new IMDBReader(basicsFile, ratingFile, akasFile);
 
-        System.out.println("Reading "+multipartFile.getName());
-        imdb= new IMDbData();
-        List<Movie> movieList= new ArrayList<>();
-        try {
-            InputStream inputStream = multipartFile.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        //create imdb index and
+        createIndex(imdbIndex,data.jsonMapping());
 
-            //first line read (no movie's info)
-            String types=reader.readLine();
 
-            int countLines=0;
-            String readLine;
-            boolean moreLines=true;
+        List<Movie> movieList = new ArrayList<>();
+        Movie movie;
+        int countMovies = 0;
 
-            while(moreLines){
-                readLine = reader.readLine();
-                //adds the movies to the list
-                imdb.moviesList(movieList,imdb.readMovieTitleBasicsLines(readLine));
-                countLines ++;
-                if (countLines==blockLines || readLine==null){
-                    elasticEngine.indexMultipleDocs(indexName,movieList);
-                    //prepare the next list
-                    countLines=0;
-                    movieList.clear();
-                    if (readLine==null)
-                        moreLines=false;
-                }
+        while(imdb.moreLines) {
+            movie=imdb.readMovie();
+
+            if (movie!=null) {
+                data.moviesList(movieList, movie);
+                countMovies++;
             }
-            System.out.println("Indexed");
-            return true;
+            if (countMovies==blockMovies ){
+                //index a "small" movie's list
+                elasticEngine.indexMultipleDocs(imdbIndex,movieList);
 
-
-
-        } catch (IOException e) {
-
-            return false;
+                //prepare the next list
+                countMovies=0;
+                movieList.clear();
+            }
         }
+        //index the last list
+        elasticEngine.indexMultipleDocs(imdbIndex,movieList);
 
 
-
-
-    }
-
-
+        System.out.println("Indexed");
+        return true;
+}
 
 
 }
