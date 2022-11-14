@@ -1,12 +1,19 @@
 package co.empathy.IMDBproject.Service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
+import co.empathy.IMDBproject.Help.QueryProvider;
+import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 
+import javax.management.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +23,7 @@ public class QueryService {
     //Testing how to compose queries
 
     private ElasticsearchClient client;
+
     public QueryService(ElasticsearchClient elasticClient) {
         this.client = elasticClient;
     }
@@ -71,6 +79,25 @@ public class QueryService {
         }
 
         return filmHits;
+
+    }
+
+    private void filterQuery(){
+        //create a filter
+        Filters filter= new Filters();
+        filter.setType("short");
+        filter.setMinScore(6);
+
+        QueryProvider qP= new QueryProvider();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().query(qP.getQuery(filter));
+
+
+
+        //String searchJson = sourceBuilder.toString(); // if you want to print search json for debugging
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.source(sourceBuilder);
+
+
 
     }
 
