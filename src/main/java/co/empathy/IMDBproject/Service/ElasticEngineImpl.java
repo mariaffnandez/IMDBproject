@@ -147,9 +147,16 @@ public class ElasticEngineImpl implements ElasticEngine {
 
     }
     public List<Movie> getQuery(Filters filter) throws IOException {
+
         return new QueriesService(client).filterQuery(filter);
 
     }
+    public List<Movie> getSearchQuery(String searchText) throws IOException {
+
+        return new QueriesService(client).searchQuery(searchText);
+
+    }
+
 
 
 }

@@ -14,6 +14,7 @@ public interface ElasticEngine {
     Boolean indexDoc(String indexName, Movie movie);
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
     List<Movie> getQuery(Filters filters) throws IOException;
+    List<Movie> getSearchQuery(String searchText) throws IOException;
 
 
 }

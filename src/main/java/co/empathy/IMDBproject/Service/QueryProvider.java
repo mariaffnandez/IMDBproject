@@ -1,12 +1,15 @@
 package co.empathy.IMDBproject.Service;
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.json.JsonData;
 import co.empathy.IMDBproject.Model.Filters;
+import org.apache.lucene.queryparser.xml.builders.TermsQueryBuilder;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -19,29 +22,26 @@ public class QueryProvider {
         List<Query> queries=new ArrayList<>();
         Query query;
         if (filters.getGenre()!=null) {
-            System.out.println("getGenre");
-            //genres list?
-            queries.add(termQuery(filters.getGenre(),"genres"));
 
+            queries.add(termsQuery(filters.getGenre(),"genres"));
         }
         if(filters.getType()!=null){
-            System.out.println("getType");
-            queries.add(termQuery(filters.getType(),"titleType"));
 
+            queries.add(termsQuery(filters.getType(),"titleType"));
 
         }
         if(nonNull(filters.getMaxMinutes()) && nonNull(filters.getMinMinutes())){
-            System.out.println("getMin");
+
             queries.add(rangeQuery(filters.getMinMinutes(),filters.getMaxMinutes(),"runtimeMinutes"));
         }
         if(nonNull(filters.getMinYear()) && nonNull(filters.getMaxYear())){
-            //use start or end Year?
-            System.out.println("getYear");
+
+            //using always start year
             queries.add(rangeQuery(filters.getMinYear(),filters.getMaxYear(),"startYear"));
         }
 
         if(nonNull(filters.getMaxScore()) && nonNull(filters.getMinScore())){
-            //num of votes?
+            //order result by num of votes?
             System.out.println("getScore");
             queries.add(rangeQuery(filters.getMinScore(),filters.getMaxScore(),"averageRating"));
         }
@@ -58,6 +58,20 @@ public class QueryProvider {
         Query query = TermQuery.of(m -> m
                 .field(field)
                 .value(value)
+        )._toQuery();
+        return query;
+    }
+
+    public Query termsQuery(String[] values, String field){
+
+        List<String> list= Arrays.asList(values);
+        System.out.println("List size "+list.size());
+        TermsQueryField terms = new TermsQueryField.Builder()
+                .value(list.stream().map(FieldValue::of).toList())
+                .build();
+        Query query = TermsQuery.of(m -> m
+                .field(field)
+                .terms(terms)
         )._toQuery();
         return query;
     }

@@ -89,6 +89,11 @@ public class ElasticServiceImpl implements ElasticService {
 
     }
 
+    public List<Movie> getSearchQuery(String searchText) throws IOException {
+        return elasticEngine.getSearchQuery(searchText);
+
+    }
+
 
 }
 

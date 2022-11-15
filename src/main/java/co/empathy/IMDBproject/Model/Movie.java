@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class Movie {
 
 
-
     String tconst;
     String titleType;
     String primaryTitle;
@@ -22,13 +21,11 @@ public class Movie {
     int startYear;
     int endYear;
     int runtimeMinutes;
+    //String []
     String genres;
     double averageRating ;
     int numVotes;
-    /*
-    //List<String> genres;
 
-    */
 
 
 }

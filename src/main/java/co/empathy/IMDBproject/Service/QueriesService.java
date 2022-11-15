@@ -1,15 +1,21 @@
 package co.empathy.IMDBproject.Service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.aggregations.CategorizeTextAggregation;
+import co.elastic.clients.elasticsearch._types.aggregations.HistogramBucket;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.InternalOrder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class QueriesService {
@@ -28,7 +34,8 @@ public class QueriesService {
 
         SearchResponse response = client.search(s -> s
                         .index(indexName)
-                        .query(query),
+                        .query(query)
+                        .size(20),
                 Movie.class
         );
         return hits(response);
@@ -54,22 +61,39 @@ public class QueriesService {
         return filmHits;
 
     }
+    public List<Movie> searchQuery(String searchText) throws IOException {
+        List<String> fields=Arrays.asList("primaryTitle","originalTitle");
+        return responseToQuery(queryProvider.multiMatchquery(searchText,fields));
+    }
     public List<Movie> filterQuery(Filters filter) throws IOException {
-        //create a filter
 
-        //filter.setMinScore(0);
 
         Query query= queryProvider.getFilterQuery(filter);
 
         return responseToQuery(query);
 
-
-
-
-
-
-
-
+    }
+    public void aggregationTypeQuery() throws IOException {
+        Query q= queryProvider.rangeQuery(2010,2020,"startYear");
+        String aggregationsName="agg-type";
+        SearchResponse<Void> response = client.search(b -> b
+                        .index(indexName)
+                        .size(0)
+                        .query(q)
+                        .aggregations(aggregationsName, a -> a
+                                .histogram(h -> h
+                                        .field("titleType")
+                                )
+                        ),
+                Void.class
+        );
+        List<HistogramBucket> buckets= response.aggregations()
+                .get(aggregationsName)
+                .histogram().buckets().array();
+        for (HistogramBucket bucket: buckets) {
+           System.out.println("There are " + bucket.docCount() +
+                    "  under " + bucket.key());
+        }
 
 
     }
