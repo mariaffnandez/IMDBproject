@@ -1,11 +1,14 @@
 package co.empathy.IMDBproject.Help;
 
+import co.empathy.IMDBproject.Model.Akas;
 import co.empathy.IMDBproject.Model.Movie;
 import org.springframework.core.io.ClassPathResource;
 
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -26,7 +29,8 @@ public class IMDbData {
             movie.setStartYear(toInteger(fields[5]));
             movie.setEndYear(toInteger(fields[6]));
             movie.setRuntimeMinutes(toInteger(fields[7]));
-            movie.setGenres(fields[8]);
+            movie.setGenres(fields[8].split(","));
+
         }
         return movie;
     }
@@ -40,9 +44,39 @@ public class IMDbData {
             movie.setNumVotes(Integer.parseInt(fields[2]));
 
         }
-
-
     }
+    //receive a line from the file and returns an aka object
+    public Akas readAkas(String line){
+        Akas aka= new Akas();
+        if (line != null) {
+
+            String[] fields = line.split("\t");
+
+            aka.setTitle(fields[2]);
+            aka.setRegion(fields[3]);
+            aka.setLanguage(fields[4]);
+            aka.setIsOriginalTitle(Boolean.parseBoolean(fields[5]));
+        }
+        return aka;
+    }
+    public void setAkas(Akas aka, Movie movie) {
+        ArrayList<Akas> list;
+        if (aka != null) {
+            //if it is the first aka, create a new akas array
+            if(movie.getAkas()==null) {
+                list= new ArrayList();
+                list.add(aka);
+                movie.setAkas(list);
+            }
+            else{
+                list=movie.getAkas();
+                list.add(aka);
+                movie.setAkas(list);
+            }
+
+        }
+    }
+
 
     //only adds to the list the nonAdults movies
     public void moviesList(List<Movie> list, Movie movie) {

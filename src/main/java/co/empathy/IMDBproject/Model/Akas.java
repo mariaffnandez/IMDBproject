@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 public class Akas {
+
     String title;
     String region;
     String language;

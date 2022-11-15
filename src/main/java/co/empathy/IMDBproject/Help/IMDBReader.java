@@ -7,14 +7,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class IMDBReader {
     private BufferedReader basicsReader;
     private BufferedReader ratingsReader;
     private BufferedReader akasReader;
     String ratingLine;
+    String akasLine;
     private IMDbData data;
     public boolean moreLines=true;
 
@@ -23,9 +22,11 @@ public class IMDBReader {
     public IMDBReader(MultipartFile basicsFile, MultipartFile ratingsFile,MultipartFile akasFile) throws IOException {
         this.basicsReader =reader(basicsFile);
         this.ratingsReader =reader(ratingsFile);
+        this.akasReader =reader(akasFile);
         this.data= new IMDbData();
         //provisional
         ratingLine=ratingsReader.readLine();
+        akasLine=akasReader.readLine();
 
 
     }
@@ -53,7 +54,12 @@ public class IMDBReader {
                 ratingLine=ratingsReader.readLine();
             }
 
-            //if they have not the same id, the rating line will be the same
+            //there are different akas for a unique movie
+            while (data.sameId(basicLine,akasLine)){
+                data.setAkas(data.readAkas(akasLine),movie);
+                akasLine=akasReader.readLine();
+            }
+
 
             return movie;
 
