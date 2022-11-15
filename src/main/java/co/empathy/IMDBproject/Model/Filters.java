@@ -1,20 +1,20 @@
 package co.empathy.IMDBproject.Model;
 
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 
-@Data
-@NoArgsConstructor
+//@Data
+//@NoArgsConstructor
+@Value
+@Builder
 public class Filters {
-    String gender;
-    int minYear;
-    int maxYear;
-    int minScore;
-    int maxScore;
-    int maxMinutes;
-    int minMinutes;
+    String genre;
+    Integer minYear;
+    Integer maxYear;
+    Double minScore;
+    Double maxScore;
+    Integer maxMinutes;
+    Integer minMinutes;
     String type;
 
 }

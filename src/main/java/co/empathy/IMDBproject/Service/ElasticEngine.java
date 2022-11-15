@@ -1,5 +1,6 @@
 package co.empathy.IMDBproject.Service;
 
+import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie;
 
 
@@ -12,6 +13,7 @@ public interface ElasticEngine {
     Boolean deleteIndex(String name);
     Boolean indexDoc(String indexName, Movie movie);
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
+    List<Movie> getQuery(Filters filters) throws IOException;
 
 
 }

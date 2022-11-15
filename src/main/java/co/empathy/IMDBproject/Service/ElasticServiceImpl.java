@@ -2,6 +2,7 @@ package co.empathy.IMDBproject.Service;
 
 import co.empathy.IMDBproject.Help.IMDBReader;
 import co.empathy.IMDBproject.Help.IMDbData;
+import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +84,10 @@ public class ElasticServiceImpl implements ElasticService {
         System.out.println("Indexed");
         return true;
 }
+    public List<Movie> getQuery(Filters filter) throws IOException {
+        return elasticEngine.getQuery(filter);
+
+    }
 
 
 }
