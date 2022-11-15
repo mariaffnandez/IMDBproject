@@ -21,10 +21,10 @@ public class Movie {
     int startYear;
     int endYear;
     int runtimeMinutes;
-    //String []
-    String genres;
+    String[] genres;
     double averageRating ;
     int numVotes;
+
 
 
 
