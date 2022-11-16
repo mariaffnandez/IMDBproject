@@ -8,29 +8,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class IMDBReader {
+public class IMDbReader {
     private BufferedReader basicsReader;
     private BufferedReader ratingsReader;
     private BufferedReader akasReader;
     private BufferedReader crewReader;
+    private BufferedReader principalsReader;
     String ratingLine;
     String akasLine;
     String crewLine;
+    String principalsLine;
+
     private IMDbData data;
     public boolean moreLines=true;
 
 
 
-    public IMDBReader(MultipartFile basicsFile, MultipartFile ratingsFile,MultipartFile akasFile, MultipartFile crewFile) throws IOException {
+    public IMDbReader(MultipartFile basicsFile, MultipartFile ratingsFile, MultipartFile akasFile, MultipartFile crewFile, MultipartFile principalsFile) throws IOException {
         this.basicsReader =reader(basicsFile);
         this.ratingsReader =reader(ratingsFile);
         this.akasReader =reader(akasFile);
         this.crewReader =reader(crewFile);
+        this.principalsReader=reader(principalsFile);
         this.data= new IMDbData();
-        //provisional
-        ratingLine=ratingsReader.readLine();
-        akasLine=akasReader.readLine();
-        crewLine=crewReader.readLine();
+
 
     }
     //returns the movie with all the info readed from the files
@@ -69,7 +70,11 @@ public class IMDBReader {
                 //and read the next rating line
                 crewLine=crewReader.readLine();
             }
-
+            //set principals
+            while (data.sameId(basicLine,principalsLine)){
+                data.setStarring(data.readStarring(principalsLine),movie);
+                principalsLine=principalsReader.readLine();
+            }
 
 
             return movie;
@@ -79,7 +84,13 @@ public class IMDBReader {
         return null;
     }
 
-
+    //read the first line with info
+    public void initializeLines() throws IOException {
+        ratingLine=ratingsReader.readLine();
+        akasLine=akasReader.readLine();
+        crewLine=crewReader.readLine();
+        principalsLine=principalsReader.readLine();
+    }
     public BufferedReader reader(MultipartFile file) {
         try {
             InputStream inputStream = file.getInputStream();

@@ -67,12 +67,13 @@ public class IndexController {
     public ResponseEntity<String> indexDoc(@RequestParam("basics") MultipartFile basicsFile,
                                            @RequestParam("ratings") MultipartFile ratingFile,
                                            @RequestParam("akas") MultipartFile akasFile,
-                                           @RequestParam("crew") MultipartFile crewFile
+                                           @RequestParam("crew") MultipartFile crewFile,
+                                           @RequestParam("principals") MultipartFile principalsFile
 
                                            ) throws IOException {
 
 
-        Boolean done=elasticService.indexIMDBData(basicsFile,ratingFile,akasFile,crewFile);
+        Boolean done=elasticService.indexIMDBData(basicsFile,ratingFile,akasFile,crewFile,principalsFile);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 

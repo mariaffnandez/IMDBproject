@@ -1,15 +1,12 @@
 package co.empathy.IMDBproject.Help;
 
-import co.empathy.IMDBproject.Model.Akas;
-import co.empathy.IMDBproject.Model.Director;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.*;
 import org.springframework.core.io.ClassPathResource;
 
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -67,14 +64,41 @@ public class IMDbData {
             if(movie.getAkas()==null) {
                 list= new ArrayList();
                 list.add(aka);
-                movie.setAkas(list);
+
             }
             else{
                 list=movie.getAkas();
                 list.add(aka);
-                movie.setAkas(list);
-            }
 
+            }
+            movie.setAkas(list);
+        }
+    }
+    public Starring readStarring(String line){
+        Starring starring= new Starring();
+        if (line != null) {
+            String[] fields = line.split("\t");
+            Name name= new Name();
+            name.setNconst(fields[2]);
+            starring.setName(name);
+            starring.setCharacters(fields[5]);
+        }
+        return starring;
+    }
+    public void setStarring(Starring starring, Movie movie) {
+        ArrayList<Starring> list;
+        if (starring != null) {
+            //if it is the first starring, create a new starring array
+            if(movie.getStarring()==null) {
+                list= new ArrayList();
+                list.add(starring);
+            }
+            else{
+                list=movie.getStarring();
+                list.add(starring);
+
+            }
+            movie.setStarring(list);
         }
     }
     public void setDirector(String line,Movie movie){
@@ -116,6 +140,8 @@ public class IMDbData {
         }
         return integer;
     }
+
+    //checks if 2 lines have the same id
     public boolean sameId(String line1, String line2){
         boolean result= false;
         if(line1!=null && line2!=null){

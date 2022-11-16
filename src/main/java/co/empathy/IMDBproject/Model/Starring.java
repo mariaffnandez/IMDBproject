@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 public class Starring {
-
-    String characters;
     Name name;
+    String characters;
 
 }

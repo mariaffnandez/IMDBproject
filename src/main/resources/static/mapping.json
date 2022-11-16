@@ -48,6 +48,18 @@
       "properties": {
         "nconst": { "type": "keyword" }
       }
+    },
+    "starring": {
+      "type": "nested",
+      "properties": {
+        "characters": { "type": "text" },
+        "name": {
+            "type": "nested",
+            "properties": {
+                "nconst" :{ "type": "keyword" }
+
+        }}
+      }
     }
   }
 }
