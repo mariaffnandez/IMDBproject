@@ -26,6 +26,8 @@ public class Movie {
     double averageRating ;
     int numVotes;
     ArrayList<Akas> akas;
+    ArrayList<Director> directors;
+    ArrayList<Starring> starring;
 
 
 
