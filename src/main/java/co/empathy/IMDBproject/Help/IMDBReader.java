@@ -12,22 +12,25 @@ public class IMDBReader {
     private BufferedReader basicsReader;
     private BufferedReader ratingsReader;
     private BufferedReader akasReader;
+    private BufferedReader crewReader;
     String ratingLine;
     String akasLine;
+    String crewLine;
     private IMDbData data;
     public boolean moreLines=true;
 
 
 
-    public IMDBReader(MultipartFile basicsFile, MultipartFile ratingsFile,MultipartFile akasFile) throws IOException {
+    public IMDBReader(MultipartFile basicsFile, MultipartFile ratingsFile,MultipartFile akasFile, MultipartFile crewFile) throws IOException {
         this.basicsReader =reader(basicsFile);
         this.ratingsReader =reader(ratingsFile);
         this.akasReader =reader(akasFile);
+        this.crewReader =reader(crewFile);
         this.data= new IMDbData();
         //provisional
         ratingLine=ratingsReader.readLine();
         akasLine=akasReader.readLine();
-
+        crewLine=crewReader.readLine();
 
     }
     //returns the movie with all the info readed from the files
@@ -45,7 +48,7 @@ public class IMDBReader {
             if (basicLine == null)
                 moreLines = false;
 
-
+            //set ratings
             //if the rating line has the same id
             if (data.sameId(basicLine,ratingLine)){
                 //adds the rating info
@@ -53,12 +56,20 @@ public class IMDBReader {
                 //and read the next rating line
                 ratingLine=ratingsReader.readLine();
             }
-
+            //set akas
             //there are different akas for a unique movie
             while (data.sameId(basicLine,akasLine)){
                 data.setAkas(data.readAkas(akasLine),movie);
                 akasLine=akasReader.readLine();
             }
+            //set directors
+            if (data.sameId(basicLine,crewLine)){
+                //adds the rating info
+                data.setDirector(crewLine,movie);
+                //and read the next rating line
+                crewLine=crewReader.readLine();
+            }
+
 
 
             return movie;

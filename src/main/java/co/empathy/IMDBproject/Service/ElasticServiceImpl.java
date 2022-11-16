@@ -50,19 +50,19 @@ public class ElasticServiceImpl implements ElasticService {
 
 
     @Override
-    public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile) throws IOException {
-        imdb = new IMDBReader(basicsFile, ratingFile, akasFile);
+    public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile,MultipartFile crewFile) throws IOException {
+        imdb = new IMDBReader(basicsFile, ratingFile, akasFile,crewFile);
 
         //create imdb index and
-        createIndex(imdbIndex,data.jsonMapping());
+        //createIndex(imdbIndex,data.jsonMapping());
 
 
         List<Movie> movieList = new ArrayList<>();
         Movie movie;
         int countMovies = 0;
         //CHANGEEEEEEEE IT
-        //while(countMovies<100){
-        while(imdb.moreLines) {
+        while(countMovies<100){
+        //while(imdb.moreLines) {
             movie=imdb.readMovie();
 
             if (movie!=null) {

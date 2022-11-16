@@ -1,10 +1,11 @@
 {
   "properties": {
     "tconst": {
-      "type": "text"
+      "type": "keyword"
     },
     "titleType": {
-      "type": "text"
+      "type": "keyword"
+
     },
     "primaryTitle": {
       "type": "text"
@@ -25,7 +26,7 @@
       "type": "integer"
     },
     "genres": {
-      "type": "text"
+      "type": "keyword"
     },
     "averageRating": {
       "type": "double"
@@ -40,6 +41,12 @@
         "region": { "type": "keyword"},
         "language": { "type": "keyword"},
         "isOriginalTitle": { "type": "boolean"}
+      }
+    },
+    "director": {
+      "type": "nested",
+      "properties": {
+        "nconst": { "type": "keyword" }
       }
     }
   }

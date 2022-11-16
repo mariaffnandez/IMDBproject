@@ -35,8 +35,8 @@ public class IMDBReaderTest {
         Akas aka1= new Akas();
 
         ArrayList<Akas> expectedArray= new ArrayList<>();
-
         expectedArray.add(aka1);
+
         movie.setAkas(expectedArray);
 
         Akas aka2= new Akas();

@@ -1,6 +1,7 @@
 package co.empathy.IMDBproject.Help;
 
 import co.empathy.IMDBproject.Model.Akas;
+import co.empathy.IMDBproject.Model.Director;
 import co.empathy.IMDBproject.Model.Movie;
 import org.springframework.core.io.ClassPathResource;
 
@@ -75,6 +76,22 @@ public class IMDbData {
             }
 
         }
+    }
+    public void setDirector(String line,Movie movie){
+        ArrayList<Director> list= new ArrayList<>();
+        if (line != null) {
+            String[] fields = line.split("\t");
+            //read the director field
+            String [] directors= fields[1].split(",");
+            //add each director to the list
+            for (String directorString:directors){
+                Director director= new Director();
+                director.setNconst(directorString);
+                list.add(director);
+            }
+            movie.setDirectors(list);
+        }
+
     }
 
 
