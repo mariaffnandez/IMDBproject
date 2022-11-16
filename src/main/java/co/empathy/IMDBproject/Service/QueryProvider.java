@@ -24,6 +24,7 @@ public class QueryProvider {
         if (filters.getGenre()!=null) {
 
             queries.add(termsQuery(filters.getGenre(),"genres"));
+            System.out.println(queries);
         }
         if(filters.getType()!=null){
 
@@ -42,7 +43,7 @@ public class QueryProvider {
 
         if(nonNull(filters.getMaxScore()) && nonNull(filters.getMinScore())){
             //order result by num of votes?
-            System.out.println("getScore");
+
             queries.add(rangeQuery(filters.getMinScore(),filters.getMaxScore(),"averageRating"));
         }
 
@@ -65,7 +66,6 @@ public class QueryProvider {
     public Query termsQuery(String[] values, String field){
 
         List<String> list= Arrays.asList(values);
-        System.out.println("List size "+list.size());
         TermsQueryField terms = new TermsQueryField.Builder()
                 .value(list.stream().map(FieldValue::of).toList())
                 .build();

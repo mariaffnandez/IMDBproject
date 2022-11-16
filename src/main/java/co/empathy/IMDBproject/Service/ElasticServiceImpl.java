@@ -61,8 +61,8 @@ public class ElasticServiceImpl implements ElasticService {
         Movie movie;
         int countMovies = 0;
         //CHANGEEEEEEEE IT
-        while(countMovies<100){
-        //while(imdb.moreLines) {
+        //while(countMovies<100){
+        while(imdb.moreLines) {
             movie=imdb.readMovie();
 
             if (movie!=null) {
