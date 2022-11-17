@@ -1,10 +1,11 @@
 {
   "properties": {
     "tconst": {
-      "type": "text"
+      "type": "keyword"
     },
     "titleType": {
-      "type": "text"
+      "type": "keyword"
+
     },
     "primaryTitle": {
       "type": "text"
@@ -25,13 +26,40 @@
       "type": "integer"
     },
     "genres": {
-      "type": "text"
+      "type": "keyword"
     },
     "averageRating": {
       "type": "double"
     },
     "numVotes": {
       "type": "integer"
+    },
+    "akas": {
+      "type": "nested",
+      "properties": {
+        "title": { "type": "text" },
+        "region": { "type": "keyword"},
+        "language": { "type": "keyword"},
+        "isOriginalTitle": { "type": "boolean"}
+      }
+    },
+    "director": {
+      "type": "nested",
+      "properties": {
+        "nconst": { "type": "keyword" }
+      }
+    },
+    "starring": {
+      "type": "nested",
+      "properties": {
+        "characters": { "type": "text" },
+        "name": {
+            "type": "nested",
+            "properties": {
+                "nconst" :{ "type": "keyword" }
+
+        }}
+      }
     }
   }
 }

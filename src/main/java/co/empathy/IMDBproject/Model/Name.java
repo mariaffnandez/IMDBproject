@@ -6,12 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 
+//
+public class Name {
 
-public class Akas {
-
-    String title;
-    String region;
-    String language;
-    Boolean isOriginalTitle;
+    String nconst;
 
 }

@@ -1,7 +1,8 @@
 package co.empathy.IMDBproject.Service;
 
-import co.empathy.IMDBproject.Help.IMDBReader;
+import co.empathy.IMDBproject.Help.IMDbReader;
 import co.empathy.IMDBproject.Help.IMDbData;
+import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -13,12 +14,12 @@ import java.util.List;
 
 public class ElasticServiceImpl implements ElasticService {
     private final ElasticEngine elasticEngine;
-    private final String imdbIndex = "test";
+    private final String imdbIndex = "imdb";
 
-    //number of movies that will be index together
+    //number of movies that will be indexed together
     int blockMovies = 50000;
 
-    private IMDBReader imdb;
+    private IMDbReader imdb;
     public IMDbData data;
 
     public ElasticServiceImpl(ElasticEngine searchEngine) {
@@ -49,17 +50,19 @@ public class ElasticServiceImpl implements ElasticService {
 
 
     @Override
-    public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile) throws IOException {
-        imdb = new IMDBReader(basicsFile, ratingFile, akasFile);
-
+    public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile,MultipartFile crewFile,MultipartFile principalsFile) throws IOException {
+        imdb = new IMDbReader(basicsFile, ratingFile, akasFile,crewFile,principalsFile);
+        imdb.initializeLines();
         //create imdb index and
-        createIndex(imdbIndex,data.jsonMapping());
+        //createIndex(imdbIndex,data.jsonMapping());
 
 
         List<Movie> movieList = new ArrayList<>();
         Movie movie;
         int countMovies = 0;
 
+        //CHANGEEEEEEEE IT
+        //while(countMovies<100){
         while(imdb.moreLines) {
             movie=imdb.readMovie();
 
@@ -83,6 +86,15 @@ public class ElasticServiceImpl implements ElasticService {
         System.out.println("Indexed");
         return true;
 }
+    public List<Movie> getQuery(Filters filter) throws IOException {
+        return elasticEngine.getQuery(filter);
+
+    }
+
+    public List<Movie> getSearchQuery(String searchText) throws IOException {
+        return elasticEngine.getSearchQuery(searchText);
+
+    }
 
 
 }

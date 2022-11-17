@@ -7,11 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 
-public class Akas {
-
-    String title;
-    String region;
-    String language;
-    Boolean isOriginalTitle;
+public class Starring {
+    Name name;
+    String characters;
 
 }

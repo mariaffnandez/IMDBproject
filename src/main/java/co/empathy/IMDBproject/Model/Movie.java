@@ -3,7 +3,8 @@ package co.empathy.IMDBproject.Model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 
 
 public class Movie {
-
 
 
     String tconst;
@@ -22,13 +22,14 @@ public class Movie {
     int startYear;
     int endYear;
     int runtimeMinutes;
-    String genres;
+    String[] genres;
     double averageRating ;
     int numVotes;
-    /*
-    //List<String> genres;
+    ArrayList<Akas> akas;
+    ArrayList<Director> directors;
+    ArrayList<Starring> starring;
 
-    */
+
 
 
 }

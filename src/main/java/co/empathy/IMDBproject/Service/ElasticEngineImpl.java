@@ -9,6 +9,7 @@ import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
+import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie;
 
 
@@ -22,8 +23,7 @@ import java.util.List;
 
 
 public class ElasticEngineImpl implements ElasticEngine {
-    private ElasticsearchClient client;
-
+    public ElasticsearchClient client;
 
     public ElasticEngineImpl(ElasticsearchClient elasticClient) {
         this.client = elasticClient;
@@ -34,8 +34,6 @@ public class ElasticEngineImpl implements ElasticEngine {
         try {
             return client.cat().indices().toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ElasticsearchException e) {
             throw new RuntimeException(e);
         }
 
@@ -112,10 +110,7 @@ public class ElasticEngineImpl implements ElasticEngine {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (ElasticsearchException e) {
-            throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -151,6 +146,17 @@ public class ElasticEngineImpl implements ElasticEngine {
 
 
     }
+    public List<Movie> getQuery(Filters filter) throws IOException {
+
+        return new QueriesService(client).filterQuery(filter);
+
+    }
+    public List<Movie> getSearchQuery(String searchText) throws IOException {
+
+        return new QueriesService(client).searchQuery(searchText);
+
+    }
+
 
 
 }
