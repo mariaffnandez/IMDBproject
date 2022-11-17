@@ -14,6 +14,7 @@ import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 
 
+import co.empathy.IMDBproject.Model.Response;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.xcontent.XContentType;
 
@@ -147,16 +148,19 @@ public class ElasticEngineImpl implements ElasticEngine {
 
 
     }
-    public List<Movie> getQuery(Filters filter) throws IOException {
+    @Override
+    public Response getQuery(Filters filter) throws IOException {
 
         return new QueriesService(client).filterQuery(filter);
 
     }
-    public List<Movie> getSearchQuery(String searchText) throws IOException {
+    @Override
+    public Response getSearchQuery(String searchText) throws IOException {
 
         return new QueriesService(client).searchQuery(searchText);
 
     }
+    @Override
     public Facets getAggregations(String field) throws IOException {
 
         return new QueriesService(client).aggregationTerms(field);

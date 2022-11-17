@@ -10,6 +10,7 @@ import co.empathy.IMDBproject.Model.Facets.Facets;
 import co.empathy.IMDBproject.Model.Facets.Values;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
+import co.empathy.IMDBproject.Model.Response;
 
 import java.io.IOException;
 import java.util.*;
@@ -25,18 +26,27 @@ public class QueriesService {
         this.queryProvider= new QueryProvider();
     }
 
-    //Multimatch query
-    public List<Movie> responseToQuery(Query query) throws IOException {
 
+    public Response responseToQuery(Query query) throws IOException {
+        Response customResponse= new Response();
+        //genres just to test
+        String field="genres";
         SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
-
+                        .aggregations(field, a -> a
+                                .terms(h -> h
+                                        .field(field)
+                                )
+                        )
 
                         ,
                 Movie.class
         );
-        return hits(response);
+        customResponse.setHits(hits(response));
+        customResponse.setFacets(aggregationsResponse(response,field));
+
+        return customResponse;
 
     }
     public List<Movie> hits (SearchResponse<Movie> response ){
@@ -59,12 +69,11 @@ public class QueriesService {
         return filmHits;
 
     }
-    public List<Movie> searchQuery(String searchText) throws IOException {
+    public Response searchQuery(String searchText) throws IOException {
         List<String> fields=Arrays.asList("primaryTitle","originalTitle");
         return responseToQuery(queryProvider.multiMatchquery(searchText,fields));
     }
-    public List<Movie> filterQuery(Filters filter) throws IOException {
-
+    public Response filterQuery(Filters filter) throws IOException {
 
         Query query= queryProvider.getFilterQuery(filter);
         System.out.println(query.toString());
@@ -84,21 +93,23 @@ public class QueriesService {
                         ),
                 Void.class
         );
-        System.out.println(response.toString());
-        List<StringTermsBucket> buckets = response.aggregations()
-                .get(field)
-                .sterms().buckets().array();
 
-        Map<String, Long> map = new HashMap<>();
+        return aggregationsResponse(response,field);
+
+    }
+
+    public Facets aggregationsResponse(SearchResponse response, String field){
+        Aggregate object= (Aggregate) response.aggregations().get(field);
+        List<StringTermsBucket> buckets= object.sterms().buckets().array();
         ArrayList<Values> valuesList= new ArrayList<>();
         for (StringTermsBucket bucket : buckets) {
+
             valuesList.add(new Values(bucket.key().stringValue(),bucket.docCount()));
 
         }
-
         return new Facets("value","facetGender",valuesList);
-
     }
+
 
 
 

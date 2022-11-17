@@ -27,7 +27,7 @@ public class SearchController  {
 
 
     @GetMapping("/search")
-    public ResponseEntity<List<Movie>> getMovies(   @RequestParam(required = false) String [] genres,
+    public ResponseEntity<Response> getMovies(   @RequestParam(required = false) String [] genres,
                                                     @RequestParam(required = false) Integer maxYear,
                                                     @RequestParam(required = false) Integer minYear,
                                                     @RequestParam(required = false) Integer maxMinutes,
@@ -50,16 +50,10 @@ public class SearchController  {
         return new ResponseEntity<>(elasticService.getQuery(filter),HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/search/aggregations")
-    public ResponseEntity<Response> getGenresAggregations() throws IOException {
-        Response response= new Response();
-        response.setHits(elasticService.getSearchQuery("the"));
-        response.setFacets(elasticService.getAggregationsBucket("genres"));
-        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
-    }
+
 
     @GetMapping("/search/text")
-    public ResponseEntity<List<Movie>> getSearchMovies( @RequestParam(required = true) String searchText) throws IOException {
+    public ResponseEntity<Response> getSearchMovies( @RequestParam(required = true) String searchText) throws IOException {
         System.out.println(searchText);
         return new ResponseEntity<>(elasticService.getSearchQuery(searchText),HttpStatus.ACCEPTED);
     }
