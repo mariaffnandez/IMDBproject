@@ -1,6 +1,6 @@
 package co.empathy.IMDBproject.Service;
 
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 import org.springframework.web.multipart.MultipartFile;
 
 

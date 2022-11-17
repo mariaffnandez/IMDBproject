@@ -2,17 +2,17 @@ package co.empathy.IMDBproject.ReadData;
 
 
 import co.empathy.IMDBproject.Help.IMDbData;
-import co.empathy.IMDBproject.Model.Akas;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Akas;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +53,29 @@ public class IMDBReaderTest {
 
         assertThat(movie.getAkas()).isEqualTo(expectedArray);
 
+    }
+    @Test
+    void smallerID(){
+        String line1="tt0001";
+        String  line2="tt0002";
+        IMDbData dataIMDB = new IMDbData();
+        boolean result= dataIMDB.smallerID(line1,line2);
+        assertThat(result).isEqualTo(true);
 
     }
+    @Test
+    void biggerID(){
+        String line1="tt00010";
+        String  line2="tt0002";
+        IMDbData dataIMDB = new IMDbData();
+        boolean result= dataIMDB.smallerID(line1,line2);
+        assertThat(result).isEqualTo(false);
+
+    }
+
+
+
+
+
 
 }

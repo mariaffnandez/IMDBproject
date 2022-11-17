@@ -2,9 +2,9 @@ package co.empathy.IMDBproject.Controller;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
+import co.empathy.IMDBproject.Model.Response;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
-import co.empathy.IMDBproject.Service.QueriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class SearchController  {
 
 
     @GetMapping("/search")
-    public ResponseEntity<List<Movie>> getMovies(   @RequestParam(required = false) String [] genre,
+    public ResponseEntity<List<Movie>> getMovies(   @RequestParam(required = false) String [] genres,
                                                     @RequestParam(required = false) Integer maxYear,
                                                     @RequestParam(required = false) Integer minYear,
                                                     @RequestParam(required = false) Integer maxMinutes,
@@ -42,7 +42,7 @@ public class SearchController  {
                 .minMinutes(minMinutes)
                 .maxYear(maxYear)
                 .minYear(minYear)
-                .genre(genre)
+                .genre(genres)
                 .minScore(minScore)
                 .maxScore(maxScore)
                 .build();
@@ -50,7 +50,15 @@ public class SearchController  {
         return new ResponseEntity<>(elasticService.getQuery(filter),HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/searchText")
+    @GetMapping("/search/aggregations")
+    public ResponseEntity<Response> getGenresAggregations() throws IOException {
+        Response response= new Response();
+        response.setHits(elasticService.getSearchQuery("the"));
+        response.setFacets(elasticService.getAggregationsBucket("genres"));
+        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/search/text")
     public ResponseEntity<List<Movie>> getSearchMovies( @RequestParam(required = true) String searchText) throws IOException {
         System.out.println(searchText);
         return new ResponseEntity<>(elasticService.getSearchQuery(searchText),HttpStatus.ACCEPTED);

@@ -1,7 +1,8 @@
 package co.empathy.IMDBproject.Service;
 
+import co.empathy.IMDBproject.Model.Facets.Facets;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public interface ElasticEngine {
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
     List<Movie> getQuery(Filters filters) throws IOException;
     List<Movie> getSearchQuery(String searchText) throws IOException;
+    Facets getAggregations(String field) throws IOException;
 
 
 }

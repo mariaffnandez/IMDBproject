@@ -1,6 +1,6 @@
 package co.empathy.IMDBproject.Help;
 
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -45,7 +45,7 @@ public class IMDbReader {
             //read basics and create a movie
             basicLine=basicsReader.readLine();
             movie= data.setBasicsLines(basicLine);
-
+            data.initializeListMovie(movie);
             if (basicLine == null)
                 moreLines = false;
 
@@ -58,11 +58,12 @@ public class IMDbReader {
                 ratingLine=ratingsReader.readLine();
             }
             //set akas
-            //there are different akas for a unique movie
+            /*there are different akas for a unique movie
             while (data.sameId(basicLine,akasLine)){
                 data.setAkas(data.readAkas(akasLine),movie);
                 akasLine=akasReader.readLine();
             }
+            */
             //set directors
             if (data.sameId(basicLine,crewLine)){
                 //adds the rating info
@@ -70,11 +71,13 @@ public class IMDbReader {
                 //and read the next rating line
                 crewLine=crewReader.readLine();
             }
-            //set principals
+            /*set principals
             while (data.sameId(basicLine,principalsLine)){
                 data.setStarring(data.readStarring(principalsLine),movie);
                 principalsLine=principalsReader.readLine();
             }
+
+             */
 
 
             return movie;
@@ -83,6 +86,7 @@ public class IMDbReader {
 
         return null;
     }
+
 
     //read the first line with info
     public void initializeLines() throws IOException {

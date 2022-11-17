@@ -1,10 +1,9 @@
-package co.empathy.IMDBproject.Model;
+package co.empathy.IMDBproject.Model.Movie;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 @Data

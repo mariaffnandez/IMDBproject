@@ -1,4 +1,4 @@
-package co.empathy.IMDBproject.Model;
+package co.empathy.IMDBproject.Model.Movie;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

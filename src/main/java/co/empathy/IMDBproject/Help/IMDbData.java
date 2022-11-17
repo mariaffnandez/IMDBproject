@@ -1,6 +1,6 @@
 package co.empathy.IMDBproject.Help;
 
-import co.empathy.IMDBproject.Model.*;
+import co.empathy.IMDBproject.Model.Movie.*;
 import org.springframework.core.io.ClassPathResource;
 
 
@@ -36,7 +36,6 @@ public class IMDbData {
     public void setRatings(String line, Movie movie) {
 
         if (line != null) {
-
             String[] fields = line.split("\t");
             movie.setAverageRating(Double.parseDouble(fields[1]));
             movie.setNumVotes(Integer.parseInt(fields[2]));
@@ -58,20 +57,10 @@ public class IMDbData {
         return aka;
     }
     public void setAkas(Akas aka, Movie movie) {
-        ArrayList<Akas> list;
+
         if (aka != null) {
-            //if it is the first aka, create a new akas array
-            if(movie.getAkas()==null) {
-                list= new ArrayList();
-                list.add(aka);
-
-            }
-            else{
-                list=movie.getAkas();
-                list.add(aka);
-
-            }
-            movie.setAkas(list);
+            //add the aka to the akas list
+            movie.getAkas().add(aka);
         }
     }
     public Starring readStarring(String line){
@@ -86,23 +75,14 @@ public class IMDbData {
         return starring;
     }
     public void setStarring(Starring starring, Movie movie) {
-        ArrayList<Starring> list;
-        if (starring != null) {
-            //if it is the first starring, create a new starring array
-            if(movie.getStarring()==null) {
-                list= new ArrayList();
-                list.add(starring);
-            }
-            else{
-                list=movie.getStarring();
-                list.add(starring);
 
-            }
-            movie.setStarring(list);
+        if (starring != null) {
+
+            movie.getStarring().add(starring);
         }
     }
     public void setDirector(String line,Movie movie){
-        ArrayList<Director> list= new ArrayList<>();
+
         if (line != null) {
             String[] fields = line.split("\t");
             //read the director field
@@ -111,9 +91,9 @@ public class IMDbData {
             for (String directorString:directors){
                 Director director= new Director();
                 director.setNconst(directorString);
-                list.add(director);
+                movie.getDirectors().add(director);
             }
-            movie.setDirectors(list);
+
         }
 
     }
@@ -151,6 +131,25 @@ public class IMDbData {
                 result = true;
         }
         return result;
+    }
+
+    public boolean smallerID(String line1, String line2){
+        boolean result= false;
+        if(line1!=null && line2!=null){
+            String id1 = line1.split("\t")[0];
+            String id2 = line2.split("\t")[0];
+            int id1Num=Integer.parseInt(id1.split("tt")[1]);
+            int id2Num=Integer.parseInt(id2.split("tt")[1]);
+            if (id1Num<id2Num)
+                result = true;
+        }
+        return result;
+
+    }
+    public void initializeListMovie(Movie movie){
+        movie.setAkas(new ArrayList());
+        movie.setStarring(new ArrayList());
+        movie.setDirectors(new ArrayList<>());
     }
 
 

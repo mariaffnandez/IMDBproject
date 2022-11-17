@@ -2,8 +2,9 @@ package co.empathy.IMDBproject.Service;
 
 import co.empathy.IMDBproject.Help.IMDbReader;
 import co.empathy.IMDBproject.Help.IMDbData;
+import co.empathy.IMDBproject.Model.Facets.Facets;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,26 +61,30 @@ public class ElasticServiceImpl implements ElasticService {
         List<Movie> movieList = new ArrayList<>();
         Movie movie;
         int countMovies = 0;
-
+        int totalMovies=0;
         //CHANGEEEEEEEE IT
-        //while(countMovies<100){
+        //while(totalMovies<10000){
         while(imdb.moreLines) {
             movie=imdb.readMovie();
-
+            totalMovies++;
             if (movie!=null) {
+                //add the movie to the list
                 data.moviesList(movieList, movie);
                 countMovies++;
             }
             if (countMovies==blockMovies ){
                 //index a "small" movie's list
+
                 elasticEngine.indexMultipleDocs(imdbIndex,movieList);
+
 
                 //prepare the next list
                 countMovies=0;
                 movieList.clear();
             }
         }
-        //index the last list
+        //index the last list if is not empty
+
         elasticEngine.indexMultipleDocs(imdbIndex,movieList);
 
 
@@ -94,6 +99,9 @@ public class ElasticServiceImpl implements ElasticService {
     public List<Movie> getSearchQuery(String searchText) throws IOException {
         return elasticEngine.getSearchQuery(searchText);
 
+    }
+    public Facets getAggregationsBucket(String field) throws IOException {
+        return elasticEngine.getAggregations(field);
     }
 
 

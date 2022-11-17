@@ -1,7 +1,7 @@
 package co.empathy.IMDBproject.Controller;
 
 
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
 
