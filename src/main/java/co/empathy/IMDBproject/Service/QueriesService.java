@@ -43,6 +43,7 @@ public class QueriesService {
                                 .terms(h -> h
                                         .field(field)
                                 )
+
                         )
 
                         ,
@@ -57,7 +58,7 @@ public class QueriesService {
 
     /**
      *
-     * @param response, this is the SearchResponse that receive
+     * @param response, receives a SearchResponse
      * @return a List<Movie> with the hits
      *
      */
@@ -81,10 +82,24 @@ public class QueriesService {
         return filmHits;
 
     }
+
+    /**
+     *
+     * @param searchText, the first param is a string with the movie´s title
+     * @return a Response with the movies which primaryTitle or originalTitle matches the query
+     * @throws IOException
+     */
     public Response searchQuery(String searchText) throws IOException {
         List<String> fields=Arrays.asList("primaryTitle","originalTitle");
         return responseToQuery(queryProvider.multiMatchquery(searchText,fields));
     }
+
+    /**
+     *
+     * @param filter, this param is a filter object
+     * @return a response to the query with these filters
+     * @throws IOException
+     */
     public Response filterQuery(Filters filter) throws IOException {
 
         Query query= queryProvider.getFilterQuery(filter);
@@ -92,7 +107,14 @@ public class QueriesService {
         return responseToQuery(query);
 
     }
-    //receive a field that can be titleType or genres and returns a hashmap
+
+    /**
+     * Runs an aggregation
+     * @param field, a string that can be titleType or genres
+     * @return facets, with the aggregations result
+     * @throws IOException
+     */
+
     public Facets aggregationTerms(String field) throws IOException {
 
         SearchResponse<Void> response = client.search(b -> b
@@ -109,6 +131,13 @@ public class QueriesService {
         return aggregationsResponse(response,field);
 
     }
+
+    /**
+     *
+     * @param response, the first param is a SearchResponse
+     * @param field, the second param is the aggregation´s name
+     * @return facets, with the results for the aggregation
+     */
 
     public Facets aggregationsResponse(SearchResponse response, String field){
         Aggregate object= (Aggregate) response.aggregations().get(field);
