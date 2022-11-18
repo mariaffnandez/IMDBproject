@@ -26,7 +26,12 @@ public class QueriesService {
         this.queryProvider= new QueryProvider();
     }
 
-
+    /**
+     *
+     * @param query, this is the query part of the search request
+     * @return a Response with the List<Movie> and the facets
+     * @throws IOException
+     */
     public Response responseToQuery(Query query) throws IOException {
         Response customResponse= new Response();
         //genres just to test
@@ -49,6 +54,13 @@ public class QueriesService {
         return customResponse;
 
     }
+
+    /**
+     *
+     * @param response, this is the SearchResponse that receive
+     * @return a List<Movie> with the hits
+     *
+     */
     public List<Movie> hits (SearchResponse<Movie> response ){
 
         TotalHits total = response.hits().total();
