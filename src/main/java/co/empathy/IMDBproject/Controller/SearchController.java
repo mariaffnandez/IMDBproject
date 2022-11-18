@@ -34,7 +34,8 @@ public class SearchController  {
                                                     @RequestParam(required = false) Integer minMinutes,
                                                     @RequestParam(required = false) Double maxScore,
                                                     @RequestParam(required = false) Double minScore,
-                                                    @RequestParam(required = false) String[] type) throws IOException {
+                                                    @RequestParam(required = false) String[] type,
+                                                    @RequestParam int maxNHits) throws IOException {
 
         Filters filter=Filters.builder()
                 .type(type)
@@ -47,7 +48,7 @@ public class SearchController  {
                 .maxScore(maxScore)
                 .build();
 
-        return new ResponseEntity<>(elasticService.getQuery(filter),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(elasticService.getQuery(filter,maxNHits),HttpStatus.ACCEPTED);
     }
 
 

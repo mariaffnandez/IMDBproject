@@ -15,7 +15,7 @@ public interface ElasticEngine {
     Boolean deleteIndex(String name);
     Boolean indexDoc(String indexName, Movie movie);
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
-    Response getQuery(Filters filters) throws IOException;
+    Response getQuery(Filters filters,int maxHits) throws IOException;
     Response getSearchQuery(String searchText) throws IOException;
 
 

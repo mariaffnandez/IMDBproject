@@ -149,9 +149,9 @@ public class ElasticEngineImpl implements ElasticEngine {
 
     }
     @Override
-    public Response getQuery(Filters filter) throws IOException {
+    public Response getQuery(Filters filter, int maxHits) throws IOException {
 
-        return new QueriesService(client).filterQuery(filter);
+        return new QueriesService(client).filterQuery(filter, maxHits);
 
     }
     @Override

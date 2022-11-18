@@ -35,7 +35,7 @@ public class QueriesService {
      * @return a Response with the List<Movie> and the facets
      * @throws IOException
      */
-    public Response responseToQuery(Query query) throws IOException {
+    public Response responseToQuery(Query query,int maxHits) throws IOException {
         Response customResponse= new Response();
         //genres just to test
        Map<String,Aggregation> map=aggregationTerms();
@@ -43,6 +43,7 @@ public class QueriesService {
         SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
+                        .size(maxHits)
                         .aggregations(genres, map.get(genres))
                         .aggregations(titleType,map.get(titleType))
 
@@ -50,7 +51,10 @@ public class QueriesService {
                 Movie.class
         );
         customResponse.setHits(hits(response));
-        customResponse.setFacets(aggregationsResponse(response,field));
+        ArrayList<Facets> facets= new ArrayList<>();
+        facets.add(aggregationsResponse(response,genres));
+        facets.add(aggregationsResponse(response,titleType));
+        customResponse.setFacets(facets);
 
         return customResponse;
 
@@ -91,7 +95,8 @@ public class QueriesService {
      */
     public Response searchQuery(String searchText) throws IOException {
         List<String> fields=Arrays.asList("primaryTitle","originalTitle");
-        return responseToQuery(queryProvider.multiMatchquery(searchText,fields));
+        int maxHits= 1000;
+        return responseToQuery(queryProvider.multiMatchquery(searchText,fields),maxHits);
     }
 
     /**
@@ -100,11 +105,11 @@ public class QueriesService {
      * @return a response to the query with these filters
      * @throws IOException
      */
-    public Response filterQuery(Filters filter) throws IOException {
+    public Response filterQuery(Filters filter,int maxHits) throws IOException {
 
         Query query= queryProvider.getFilterQuery(filter);
         System.out.println(query.toString());
-        return responseToQuery(query);
+        return responseToQuery(query, maxHits);
 
     }
 
@@ -140,7 +145,7 @@ public class QueriesService {
             valuesList.add(new Values(bucket.key().stringValue(),bucket.docCount()));
 
         }
-        return new Facets("value","facetGender",valuesList);
+        return new Facets("value","facet"+field,valuesList);
     }
 
 
