@@ -36,8 +36,8 @@ public class ElasticServiceImpl implements ElasticService {
     }
 
     @Override
-    public Boolean createIndex(String name, String source) {
-        return elasticEngine.createIndex(name, source);
+    public Boolean createIndex(String name, InputStream mapping) {
+        return elasticEngine.createIndex(name, mapping);
     }
 
     @Override
@@ -53,10 +53,12 @@ public class ElasticServiceImpl implements ElasticService {
 
     @Override
     public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile,MultipartFile crewFile,MultipartFile principalsFile) throws IOException {
+
+
         imdb = new IMDbReader(basicsFile, ratingFile, akasFile,crewFile,principalsFile);
         imdb.initializeLines();
-        //create imdb index and
-        //createIndex(imdbIndex,data.jsonMapping());
+        //create imdb index and set the mapping properties
+        createIndex(imdbIndex,data.jsonMapping());
 
 
         List<Movie> movieList = new ArrayList<>();

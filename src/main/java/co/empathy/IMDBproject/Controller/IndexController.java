@@ -34,15 +34,7 @@ public class IndexController {
     }
 
     //Creates a new index
-    @PutMapping("/{indexName}")
-    public ResponseEntity createIndex(@PathVariable String indexName, @RequestBody String source) {
 
-        if (elasticService.createIndex(indexName, source)) {
-
-            return new ResponseEntity(HttpStatus.CREATED);
-        } else
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-    }
 
     //index a single doc
     @PostMapping("/{indexName}/_doc")
@@ -73,7 +65,7 @@ public class IndexController {
                                            ) throws IOException {
 
 
-        Boolean done=elasticService.indexIMDBData(basicsFile,ratingFile,akasFile,crewFile,principalsFile);
+       Boolean done=elasticService.indexIMDBData(basicsFile,ratingFile,akasFile,crewFile,principalsFile);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 

@@ -153,8 +153,10 @@ public class IMDbData {
     }
 
 
-    public String jsonMapping() throws IOException {
+    public InputStream jsonMapping() throws IOException {
         InputStream mappingInputStream = new ClassPathResource("static/mapping.json").getInputStream();
-        return new String(mappingInputStream.readAllBytes(), UTF_8);
+        mappingInputStream.toString();
+
+        return mappingInputStream;
     }
 }

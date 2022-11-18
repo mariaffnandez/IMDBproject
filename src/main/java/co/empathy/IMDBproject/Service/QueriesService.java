@@ -11,7 +11,7 @@ import co.empathy.IMDBproject.Model.Facets.Values;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
+
 
 import java.io.IOException;
 import java.util.*;

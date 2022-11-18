@@ -15,11 +15,10 @@ import co.empathy.IMDBproject.Model.Movie.Movie;
 
 
 import co.empathy.IMDBproject.Model.Response;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.xcontent.XContentType;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 
@@ -42,25 +41,20 @@ public class ElasticEngineImpl implements ElasticEngine {
 
     //Receives an index name and a json with settings, mappings, aliases...
     @Override
-    public Boolean createIndex(String name, String mapping) {
+    public Boolean createIndex(String name, InputStream mapping) {
 
         try {
 
-
-            CreateIndexRequest request = new CreateIndexRequest(name);
-            if (mapping != null) {
-                System.out.println("map");
-                request.mapping(mapping,XContentType.JSON);
-
+            if (mapping == null || name==null) {
+                return false;
             }
-            CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name));
 
-            System.out.println("Created");
+            CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name).withJson(mapping));
             return createIndexResponse.acknowledged();
 
 
         } catch (Exception e) {
-            //can not create de index
+            System.out.println(e.getMessage());
             return false;
 
 
@@ -137,9 +131,6 @@ public class ElasticEngineImpl implements ElasticEngine {
 
                 } else response=true;
             } catch (IOException e) {
-
-                throw new RuntimeException(e);
-            } catch (ElasticsearchException e) {
 
                 throw new RuntimeException(e);
             }
