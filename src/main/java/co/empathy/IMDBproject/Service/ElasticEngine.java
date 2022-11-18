@@ -17,7 +17,6 @@ public interface ElasticEngine {
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
     Response getQuery(Filters filters) throws IOException;
     Response getSearchQuery(String searchText) throws IOException;
-    Facets getAggregations(String field) throws IOException;
 
 
 }

@@ -11,6 +11,7 @@ import co.empathy.IMDBproject.Model.Facets.Values;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,6 +20,8 @@ public class QueriesService {
     private ElasticsearchClient client;
     private QueryProvider queryProvider;
     String indexName= "imdb";
+    String genres= "genres";
+    String titleType="titleType";
 
     public QueriesService(ElasticsearchClient elasticClient) {
 
@@ -35,16 +38,13 @@ public class QueriesService {
     public Response responseToQuery(Query query) throws IOException {
         Response customResponse= new Response();
         //genres just to test
-        String field="genres";
+       Map<String,Aggregation> map=aggregationTerms();
+
         SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
-                        .aggregations(field, a -> a
-                                .terms(h -> h
-                                        .field(field)
-                                )
-
-                        )
+                        .aggregations(genres, map.get(genres))
+                        .aggregations(titleType,map.get(titleType))
 
                         ,
                 Movie.class
@@ -110,25 +110,17 @@ public class QueriesService {
 
     /**
      * Runs an aggregation
-     * @param field, a string that can be titleType or genres
-     * @return facets, with the aggregations result
+     * @return a map with the aggregations as value
      * @throws IOException
      */
 
-    public Facets aggregationTerms(String field) throws IOException {
+    public Map<String,Aggregation> aggregationTerms() {
 
-        SearchResponse<Void> response = client.search(b -> b
-                        .index(indexName)
-                        .size(0)
-                        .aggregations(field, a -> a
-                                .terms(h -> h
-                                        .field(field)
-                                )
-                        ),
-                Void.class
-        );
+       Map<String,Aggregation> map= new HashMap<>();
+       map.put(genres,Aggregation.of(a -> a.terms(h -> h.field("genres"))));
+       map.put(titleType,Aggregation.of(a -> a.terms(h -> h.field("titleType"))));
 
-        return aggregationsResponse(response,field);
+        return map;
 
     }
 

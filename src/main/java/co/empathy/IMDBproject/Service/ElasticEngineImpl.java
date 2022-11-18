@@ -160,12 +160,7 @@ public class ElasticEngineImpl implements ElasticEngine {
         return new QueriesService(client).searchQuery(searchText);
 
     }
-    @Override
-    public Facets getAggregations(String field) throws IOException {
 
-        return new QueriesService(client).aggregationTerms(field);
-
-    }
 
 
 

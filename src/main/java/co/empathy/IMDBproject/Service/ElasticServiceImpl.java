@@ -102,9 +102,7 @@ public class ElasticServiceImpl implements ElasticService {
         return elasticEngine.getSearchQuery(searchText);
 
     }
-    public Facets getAggregationsBucket(String field) throws IOException {
-        return elasticEngine.getAggregations(field);
-    }
+
 
 
 }
