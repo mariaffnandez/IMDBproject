@@ -77,7 +77,6 @@ public class ElasticServiceImpl implements ElasticService {
             }
             if (countMovies==blockMovies ){
                 //index a "small" movie's list
-
                 elasticEngine.indexMultipleDocs(imdbIndex,movieList);
 
 

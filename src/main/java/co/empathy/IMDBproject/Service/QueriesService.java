@@ -1,6 +1,9 @@
 package co.empathy.IMDBproject.Service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.SortMode;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.*;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -39,11 +42,14 @@ public class QueriesService {
         Response customResponse= new Response();
         //genres just to test
        Map<String,Aggregation> map=aggregationTerms();
-
+       List<SortOptions> list= new ArrayList<>();
+       sort(list,"averageRating","");
+        sort(list,"startYear","asc");
         SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
                         .size(maxHits)
+                        .sort(list)
                         .aggregations(genres, map.get(genres))
                         .aggregations(titleType,map.get(titleType))
 
@@ -146,6 +152,24 @@ public class QueriesService {
 
         }
         return new Facets("value","facet"+field,valuesList);
+    }
+
+    /**
+     * Adds to the list a sortOption
+     * @param list, list with sortOptions
+     * @param field, the movie´s field (number type as startYear, averageRating,runtimeMinutes...)
+     * @param order asc/desc order
+     */
+
+    public void sort(List<SortOptions> list, String field, String order){
+        //desc order by default
+        SortOrder sortOrder=SortOrder.Desc;
+        if(order.equalsIgnoreCase("asc"))
+            sortOrder=SortOrder.Asc;
+
+        SortOrder finalSortOrder = sortOrder;
+        list.add(new SortOptions.Builder().field(f -> f.field(field).order(finalSortOrder)).build());
+
     }
 
 
