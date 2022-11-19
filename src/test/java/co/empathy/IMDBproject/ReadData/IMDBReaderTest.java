@@ -3,6 +3,7 @@ package co.empathy.IMDBproject.ReadData;
 
 import co.empathy.IMDBproject.Help.IMDbData;
 import co.empathy.IMDBproject.Model.Movie.Akas;
+import co.empathy.IMDBproject.Model.Movie.Director;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -71,6 +72,19 @@ public class IMDBReaderTest {
         boolean result= dataIMDB.smallerID(line1,line2);
         assertThat(result).isEqualTo(false);
 
+    }
+    @Test
+    void givenCrewLineAddDirector(){
+        Movie movie= new Movie();
+        movie.setDirectors(new ArrayList<>());
+        IMDbData dataIMDB = new IMDbData();
+        String line="tt00000007\tnm0005690,nm0374658\t\\N";
+        dataIMDB.setDirector(line,movie);
+        for (Director direct:movie.getDirectors()){
+            System.out.println(direct.getNconst());
+        }
+
+        assertThat(movie.getDirectors()).isNotEmpty();
     }
 
 

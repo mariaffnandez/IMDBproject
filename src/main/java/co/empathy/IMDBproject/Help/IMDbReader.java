@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class IMDbReader {
-    private BufferedReader basicsReader;
+    private  BufferedReader basicsReader;
     private BufferedReader ratingsReader;
     private BufferedReader akasReader;
     private BufferedReader crewReader;
@@ -24,7 +24,7 @@ public class IMDbReader {
 
 
 
-    public IMDbReader(MultipartFile basicsFile, MultipartFile ratingsFile, MultipartFile akasFile, MultipartFile crewFile, MultipartFile principalsFile) throws IOException {
+    public IMDbReader(MultipartFile basicsFile, MultipartFile ratingsFile, MultipartFile akasFile, MultipartFile crewFile, MultipartFile principalsFile) {
         this.basicsReader =reader(basicsFile);
         this.ratingsReader =reader(ratingsFile);
         this.akasReader =reader(akasFile);
@@ -44,18 +44,28 @@ public class IMDbReader {
 
             //read basics and create a movie
             basicLine=basicsReader.readLine();
+
             movie= data.setBasicsLines(basicLine);
-            data.initializeListMovie(movie);
+
+
             if (basicLine == null)
                 moreLines = false;
 
             //set ratings
             //if the rating line has the same id
             if (data.sameId(basicLine,ratingLine)){
+
                 //adds the rating info
                 data.setRatings(ratingLine,movie);
                 //and read the next rating line
                 ratingLine=ratingsReader.readLine();
+            }
+            else if(data.smallerID(ratingLine,basicLine)){
+                //if the rating´s id is smaller does not exist in basics file
+                //so read the next line
+                ratingLine=ratingsReader.readLine();
+
+
             }
             //set akas
             /*there are different akas for a unique movie
@@ -66,11 +76,22 @@ public class IMDbReader {
             */
             //set directors
             if (data.sameId(basicLine,crewLine)){
-                //adds the rating info
+                //adds the director info
                 data.setDirector(crewLine,movie);
-                //and read the next rating line
+                //and read the next crew line
                 crewLine=crewReader.readLine();
             }
+            else if(data.smallerID(crewLine,basicLine)){
+                //if the director´s id is smaller does not exist in basics file
+                //so read the next line
+                crewLine=crewReader.readLine();
+
+
+
+            }
+
+
+
             /*set principals
             while (data.sameId(basicLine,principalsLine)){
                 data.setStarring(data.readStarring(principalsLine),movie);
@@ -78,8 +99,6 @@ public class IMDbReader {
             }
 
              */
-
-
             return movie;
 
             }

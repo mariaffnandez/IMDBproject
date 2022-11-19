@@ -28,6 +28,7 @@ public class IMDbData {
             movie.setEndYear(toInteger(fields[6]));
             movie.setRuntimeMinutes(toInteger(fields[7]));
             movie.setGenres(fields[8].split(","));
+            initializeListMovie(movie);
 
         }
         return movie;
@@ -98,8 +99,12 @@ public class IMDbData {
 
     }
 
+    /**
+     * Adds the nonAdult movies to the list
+     * @param list, a movie´s list
+     * @param movie, the movie that will be added to the list
+     */
 
-    //only adds to the list the nonAdults movies
     public void moviesList(List<Movie> list, Movie movie) {
         if (movie != null) {
             if (movie.getIsAdult() != null && !movie.getIsAdult())
@@ -121,7 +126,13 @@ public class IMDbData {
         return integer;
     }
 
-    //checks if 2 lines have the same id
+    /**
+     *
+     * @param line1, a readline with an id
+     * @param line2, another readline with an id
+     * @return true if both lines have the same id
+     */
+
     public boolean sameId(String line1, String line2){
         boolean result= false;
         if(line1!=null && line2!=null){
@@ -133,6 +144,12 @@ public class IMDbData {
         return result;
     }
 
+    /**
+     *
+     * @param line1, the line with the first id
+     * @param line2, the line with the second id
+     * @return true if the id1 is smaller than the id2
+     */
     public boolean smallerID(String line1, String line2){
         boolean result= false;
         if(line1!=null && line2!=null){
@@ -155,8 +172,6 @@ public class IMDbData {
 
     public InputStream jsonMapping() throws IOException {
         InputStream mappingInputStream = new ClassPathResource("static/mapping.json").getInputStream();
-        mappingInputStream.toString();
-
         return mappingInputStream;
     }
 }
