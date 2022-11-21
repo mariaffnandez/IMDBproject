@@ -52,53 +52,63 @@ public class IMDbReader {
                 moreLines = false;
 
             //set ratings
-            //if the rating line has the same id
+            //if the rating id is smaller that the movie'id read the next line
+            if (data.smallerID(ratingLine,basicLine))
+                ratingLine=ratingsReader.readLine();
+
+            //if they have the same id
             if (data.sameId(basicLine,ratingLine)){
-
-                //adds the rating info
-                data.setRatings(ratingLine,movie);
-                //and read the next rating line
-                ratingLine=ratingsReader.readLine();
-            }
-            else if(data.smallerID(ratingLine,basicLine)){
-                //if the rating´s id is smaller does not exist in basics file
-                //so read the next line
-                ratingLine=ratingsReader.readLine();
+                    //adds the rating info
+                    data.setRatings(ratingLine,movie);
+                    //and read the next rating line
+                    ratingLine=ratingsReader.readLine();
+                }
 
 
-            }
+
+
             //set akas
-            /*there are different akas for a unique movie
+            //there are different akas for a unique movie
+            while (data.smallerID(akasLine,basicLine))
+                akasLine=akasReader.readLine();
+
             while (data.sameId(basicLine,akasLine)){
                 data.setAkas(data.readAkas(akasLine),movie);
+                //read the next line
                 akasLine=akasReader.readLine();
             }
-            */
+
+
+
+
             //set directors
-            if (data.sameId(basicLine,crewLine)){
-                //adds the director info
-                data.setDirector(crewLine,movie);
-                //and read the next crew line
-                crewLine=crewReader.readLine();
-            }
-            else if(data.smallerID(crewLine,basicLine)){
-                //if the director´s id is smaller does not exist in basics file
-                //so read the next line
-                crewLine=crewReader.readLine();
+            //if the director id is smaller than the movie id, read next
+            if ( data.smallerID(crewLine,basicLine))
+                crewLine = crewReader.readLine();
+
+            //if they have the same id
+            if (data.sameId(basicLine, crewLine)) {
+                    //adds the director info
+                    data.setDirector(crewLine, movie);
+                    crewLine = crewReader.readLine();
+                }
 
 
 
-            }
 
 
+            //set principals
+            while (data.smallerID(principalsLine,basicLine))
+                principalsLine=principalsReader.readLine();
 
-            /*set principals
             while (data.sameId(basicLine,principalsLine)){
                 data.setStarring(data.readStarring(principalsLine),movie);
                 principalsLine=principalsReader.readLine();
             }
 
-             */
+
+
+
             return movie;
 
             }

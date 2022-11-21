@@ -14,6 +14,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class IMDbData {
 
+    /**
+     *
+     * @param line, a line from the title-basics file
+     * @return, a movie with all the basic info
+     */
     public Movie setBasicsLines(String line) {
         Movie movie = new Movie();
         if (line != null) {
@@ -34,6 +39,11 @@ public class IMDbData {
         return movie;
     }
 
+    /**
+     *
+     * @param line, a line from the ratings file
+     * @param movie, the movie
+     */
     public void setRatings(String line, Movie movie) {
 
         if (line != null) {
@@ -43,7 +53,13 @@ public class IMDbData {
 
         }
     }
-    //receive a line from the file and returns an aka object
+
+    /**
+     *
+     * @param line, a line from the akas file
+     * @return an Aka object
+     */
+
     public Akas readAkas(String line){
         Akas aka= new Akas();
         if (line != null) {
@@ -57,6 +73,12 @@ public class IMDbData {
         }
         return aka;
     }
+
+    /**
+     *
+     * @param aka, the aka object
+     * @param movie, a movie to add the aka in
+     */
     public void setAkas(Akas aka, Movie movie) {
 
         if (aka != null) {
@@ -78,7 +100,6 @@ public class IMDbData {
     public void setStarring(Starring starring, Movie movie) {
 
         if (starring != null) {
-
             movie.getStarring().add(starring);
         }
     }
@@ -113,7 +134,12 @@ public class IMDbData {
 
     }
 
-    //Handle \N value on int fields
+    /**
+     * Handle /N value on number fields
+     * @param field, a string with a number
+     * @return the string as a number (value -1 if it is an invalid value)
+     */
+
     public int toInteger(String field) {
         int integer;
         try {
