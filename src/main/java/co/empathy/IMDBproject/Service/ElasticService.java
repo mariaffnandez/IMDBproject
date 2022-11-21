@@ -1,16 +1,17 @@
 package co.empathy.IMDBproject.Service;
 
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public interface ElasticService {
     String listIndices() throws IOException;
 
-    Boolean createIndex(String name, String source);
+    Boolean createIndex(String name, InputStream mapping);
      Boolean deleteIndex(String name);
 
     Boolean indexDoc(String indexName, Movie movie);

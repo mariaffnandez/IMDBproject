@@ -9,16 +9,16 @@ import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
+import co.empathy.IMDBproject.Model.Facets.Facets;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
 
 
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.client.indices.GetIndexRequest;
-import org.elasticsearch.xcontent.XContentType;
+import co.empathy.IMDBproject.Model.Response;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 
@@ -41,28 +41,20 @@ public class ElasticEngineImpl implements ElasticEngine {
 
     //Receives an index name and a json with settings, mappings, aliases...
     @Override
-    public Boolean createIndex(String name, String mapping) {
+    public Boolean createIndex(String name, InputStream mapping) {
 
         try {
-            //DOES NOT WORK, check if the index already exists
 
-            GetIndexRequest existReq = new GetIndexRequest(name);
-            //boolean exists = client.indices().exists(request, RequestOptions.DEFAULT);
-            CreateIndexRequest request = new CreateIndexRequest(name);
-            if (mapping != null) {
-
-
-                request.mapping(mapping,XContentType.JSON);
-
-
+            if (mapping == null || name==null) {
+                return false;
             }
-            CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name));
-            System.out.println("Created");
+
+            CreateIndexResponse createIndexResponse = client.indices().create(c -> c.index(name).withJson(mapping));
             return createIndexResponse.acknowledged();
 
 
         } catch (Exception e) {
-            //can not create de index
+            System.out.println(e.getMessage());
             return false;
 
 
@@ -116,46 +108,50 @@ public class ElasticEngineImpl implements ElasticEngine {
     @Override
 
     public Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException {
-        try {
-            BulkRequest.Builder br = new BulkRequest.Builder();
+        boolean response=false;
+        if (!movies.isEmpty()) {
+            try {
+                BulkRequest.Builder br = new BulkRequest.Builder();
 
-            for (Movie movie : movies) {
-                br.operations(op -> op
-                        .index(idx -> idx
-                                .index(indexName)
-                                .id(movie.getTconst())
-                                .document(movie)
-                        )
-                );
+                for (Movie movie : movies) {
+                    br.operations(op -> op
+                            .index(idx -> idx
+                                    .index(indexName)
+                                    .id(movie.getTconst())
+                                    .document(movie)
+                            )
+                    );
+                }
+
+                BulkResponse result = client.bulk(br.build());
+
+
+                if (result.errors()) {
+                    System.out.println("Bulk error indexing multiple docs");
+
+                } else response=true;
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
             }
-
-            BulkResponse result = client.bulk(br.build());
-
-
-            if (result.errors()) {
-                System.out.println("Bulk error indexing multiple docs");
-                return false;
-            } else return true;
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
-        } catch (ElasticsearchException e) {
-
-            throw new RuntimeException(e);
         }
+        return response;
 
 
     }
-    public List<Movie> getQuery(Filters filter) throws IOException {
+    @Override
+    public Response getQuery(Filters filter, int maxHits) throws IOException {
 
-        return new QueriesService(client).filterQuery(filter);
+        return new QueriesService(client).filterQuery(filter, maxHits);
 
     }
-    public List<Movie> getSearchQuery(String searchText) throws IOException {
+    @Override
+    public Response getSearchQuery(String searchText) throws IOException {
 
         return new QueriesService(client).searchQuery(searchText);
 
     }
+
 
 
 

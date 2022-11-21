@@ -1,27 +1,30 @@
 package co.empathy.IMDBproject.Service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.aggregations.CategorizeTextAggregation;
-import co.elastic.clients.elasticsearch._types.aggregations.HistogramBucket;
+import co.elastic.clients.elasticsearch._types.SortMode;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.aggregations.*;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
+import co.empathy.IMDBproject.Model.Facets.Facets;
+import co.empathy.IMDBproject.Model.Facets.Values;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie;
-import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.InternalOrder;
+import co.empathy.IMDBproject.Model.Movie.Movie;
+import co.empathy.IMDBproject.Model.Response;
+
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class QueriesService {
     private ElasticsearchClient client;
     private QueryProvider queryProvider;
-    String indexName= "test";
+    String indexName= "imdb";
+    String genres= "genres";
+    String titleType="titleType";
 
     public QueriesService(ElasticsearchClient elasticClient) {
 
@@ -29,18 +32,46 @@ public class QueriesService {
         this.queryProvider= new QueryProvider();
     }
 
-    //Multimatch query
-    public List<Movie> responseToQuery(Query query) throws IOException {
-
+    /**
+     *
+     * @param query, this is the query part of the search request
+     * @return a Response with the List<Movie> and the facets
+     * @throws IOException
+     */
+    public Response responseToQuery(Query query,int maxHits) throws IOException {
+        Response customResponse= new Response();
+        //genres just to test
+       Map<String,Aggregation> map=aggregationTerms();
+       List<SortOptions> list= new ArrayList<>();
+       sort(list,"averageRating","");
+        sort(list,"startYear","asc");
         SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
-                        .size(20),
+                        .size(maxHits)
+                        .sort(list)
+                        .aggregations(genres, map.get(genres))
+                        .aggregations(titleType,map.get(titleType))
+
+                        ,
                 Movie.class
         );
-        return hits(response);
+        customResponse.setHits(hits(response));
+        ArrayList<Facets> facets= new ArrayList<>();
+        facets.add(aggregationsResponse(response,genres));
+        facets.add(aggregationsResponse(response,titleType));
+        customResponse.setFacets(facets);
+
+        return customResponse;
 
     }
+
+    /**
+     *
+     * @param response, receives a SearchResponse
+     * @return a List<Movie> with the hits
+     *
+     */
     public List<Movie> hits (SearchResponse<Movie> response ){
 
         TotalHits total = response.hits().total();
@@ -61,42 +92,86 @@ public class QueriesService {
         return filmHits;
 
     }
-    public List<Movie> searchQuery(String searchText) throws IOException {
-        List<String> fields=Arrays.asList("primaryTitle","originalTitle");
-        return responseToQuery(queryProvider.multiMatchquery(searchText,fields));
-    }
-    public List<Movie> filterQuery(Filters filter) throws IOException {
 
+    /**
+     *
+     * @param searchText, the first param is a string with the movie´s title
+     * @return a Response with the movies which primaryTitle or originalTitle matches the query
+     * @throws IOException
+     */
+    public Response searchQuery(String searchText) throws IOException {
+        List<String> fields=Arrays.asList("primaryTitle","originalTitle");
+        int maxHits= 1000;
+        return responseToQuery(queryProvider.multiMatchquery(searchText,fields),maxHits);
+    }
+
+    /**
+     *
+     * @param filter, this param is a filter object
+     * @return a response to the query with these filters
+     * @throws IOException
+     */
+    public Response filterQuery(Filters filter,int maxHits) throws IOException {
 
         Query query= queryProvider.getFilterQuery(filter);
-
-        return responseToQuery(query);
+        System.out.println(query.toString());
+        return responseToQuery(query, maxHits);
 
     }
-    public void aggregationTypeQuery() throws IOException {
-        Query q= queryProvider.rangeQuery(2010,2020,"startYear");
-        String aggregationsName="agg-type";
-        SearchResponse<Void> response = client.search(b -> b
-                        .index(indexName)
-                        .size(0)
-                        .query(q)
-                        .aggregations(aggregationsName, a -> a
-                                .histogram(h -> h
-                                        .field("titleType")
-                                )
-                        ),
-                Void.class
-        );
-        List<HistogramBucket> buckets= response.aggregations()
-                .get(aggregationsName)
-                .histogram().buckets().array();
-        for (HistogramBucket bucket: buckets) {
-           System.out.println("There are " + bucket.docCount() +
-                    "  under " + bucket.key());
+
+    /**
+     * Runs an aggregation
+     * @return a map with the aggregations as value
+     * @throws IOException
+     */
+
+    public Map<String,Aggregation> aggregationTerms() {
+
+       Map<String,Aggregation> map= new HashMap<>();
+       map.put(genres,Aggregation.of(a -> a.terms(h -> h.field("genres"))));
+       map.put(titleType,Aggregation.of(a -> a.terms(h -> h.field("titleType"))));
+
+        return map;
+
+    }
+
+    /**
+     *
+     * @param response, the first param is a SearchResponse
+     * @param field, the second param is the aggregation´s name
+     * @return facets, with the results for the aggregation
+     */
+
+    public Facets aggregationsResponse(SearchResponse response, String field){
+        Aggregate object= (Aggregate) response.aggregations().get(field);
+        List<StringTermsBucket> buckets= object.sterms().buckets().array();
+        ArrayList<Values> valuesList= new ArrayList<>();
+        for (StringTermsBucket bucket : buckets) {
+
+            valuesList.add(new Values(bucket.key().stringValue(),bucket.docCount()));
+
         }
+        return new Facets("value","facet"+field,valuesList);
+    }
 
+    /**
+     * Adds to the list a sortOption
+     * @param list, list with sortOptions
+     * @param field, the movie´s field (number type as startYear, averageRating,runtimeMinutes...)
+     * @param order asc/desc order
+     */
+
+    public void sort(List<SortOptions> list, String field, String order){
+        //desc order by default
+        SortOrder sortOrder=SortOrder.Desc;
+        if(order.equalsIgnoreCase("asc"))
+            sortOrder=SortOrder.Asc;
+
+        SortOrder finalSortOrder = sortOrder;
+        list.add(new SortOptions.Builder().field(f -> f.field(field).order(finalSortOrder)).build());
 
     }
+
 
 
 

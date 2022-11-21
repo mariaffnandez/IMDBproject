@@ -2,9 +2,9 @@ package co.empathy.IMDBproject.Controller;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie;
+import co.empathy.IMDBproject.Model.Movie.Movie;
+import co.empathy.IMDBproject.Model.Response;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
-import co.empathy.IMDBproject.Service.QueriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +27,15 @@ public class SearchController  {
 
 
     @GetMapping("/search")
-    public ResponseEntity<List<Movie>> getMovies(   @RequestParam(required = false) String [] genre,
+    public ResponseEntity<Response> getMovies(   @RequestParam(required = false) String [] genres,
                                                     @RequestParam(required = false) Integer maxYear,
                                                     @RequestParam(required = false) Integer minYear,
                                                     @RequestParam(required = false) Integer maxMinutes,
                                                     @RequestParam(required = false) Integer minMinutes,
                                                     @RequestParam(required = false) Double maxScore,
                                                     @RequestParam(required = false) Double minScore,
-                                                    @RequestParam(required = false) String[] type) throws IOException {
+                                                    @RequestParam(required = false) String[] type,
+                                                    @RequestParam int maxNHits) throws IOException {
 
         Filters filter=Filters.builder()
                 .type(type)
@@ -42,16 +43,18 @@ public class SearchController  {
                 .minMinutes(minMinutes)
                 .maxYear(maxYear)
                 .minYear(minYear)
-                .genre(genre)
+                .genre(genres)
                 .minScore(minScore)
                 .maxScore(maxScore)
                 .build();
 
-        return new ResponseEntity<>(elasticService.getQuery(filter),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(elasticService.getQuery(filter,maxNHits),HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/searchText")
-    public ResponseEntity<List<Movie>> getSearchMovies( @RequestParam(required = true) String searchText) throws IOException {
+
+
+    @GetMapping("/search/text")
+    public ResponseEntity<Response> getSearchMovies( @RequestParam(required = true) String searchText) throws IOException {
         System.out.println(searchText);
         return new ResponseEntity<>(elasticService.getSearchQuery(searchText),HttpStatus.ACCEPTED);
     }
