@@ -10,14 +10,14 @@ Using Elasticsearch
 ### Endpoints:
 #### /search 
 Parameters:
-- **genres** (String) - Title genres. Multiple genres should be sent separeted by commas (e.g genres=Action,Sci-Fi)  
-- **type** (String) - Title type. Values send in the same way as genres parameter. 
-- **maxYear** (Integer) - Maximun start year. 
-- **minYear** (Integer) - Miniumn start year 
-- **maxMinutes** (Integer) - Maximun runtime minutes
-- **minMinutes** (Integer) - Minimun runtime minutes
-- **maxScore** (Double) - Maximun average rating
-- **minScore** (Double) - Minimun average rating
+- **genres** (String) - Value of genres to filter by. Multiple genres should be sent separeted by commas (e.g genres=Action,Sci-Fi)  
+- **type** (String) - Value of title type to filter by. Values send in the same way as genres parameter 
+- **maxYear** (Integer) - Max value of start year to filter by 
+- **minYear** (Integer) - Min value of start year to filter by
+- **maxMinutes** (Integer) - Max value of runtime minutes to filter by
+- **minMinutes** (Integer) - Min value of runtime minutes to filter by
+- **maxScore** (Double) - Max value of average rating to filter by
+- **minScore** (Double) - Min value of average rating to filter by
 - **maxNHits** * (Integer)  - Upper bound of the number of hits returned
 - **sortRating** (String) - (asc/desc) The ordering of the sort. 
 - **sortNumVotes** (String) - (asc/desc) The ordering of the sort. 
