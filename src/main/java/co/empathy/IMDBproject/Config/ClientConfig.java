@@ -32,7 +32,8 @@ public class ClientConfig {
 
     @Bean
     public RestClient lowClient() {
-        RestClient client = RestClient.builder(new HttpHost("localhost", 9200))
+        RestClient client = RestClient.builder(new HttpHost("localhost", 9200),
+                        new HttpHost("elasticsearch", 9200))
                 .build();
         return client;
     }
