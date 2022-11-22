@@ -4,6 +4,7 @@ import co.empathy.IMDBproject.Model.Facets.Facets;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
+import co.empathy.IMDBproject.Model.Sort;
 
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public interface ElasticEngine {
     Boolean deleteIndex(String name);
     Boolean indexDoc(String indexName, Movie movie);
     Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException;
-    Response getQuery(Filters filters,int maxHits) throws IOException;
+    Response getQuery(Filters filters,int maxHits, Sort sort) throws IOException;
     Response getSearchQuery(String searchText) throws IOException;
 
 

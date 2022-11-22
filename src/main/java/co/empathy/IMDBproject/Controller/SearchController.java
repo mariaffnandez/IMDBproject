@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
+import co.empathy.IMDBproject.Model.Sort;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,10 @@ public class SearchController  {
                                                     @RequestParam(required = false) Double maxScore,
                                                     @RequestParam(required = false) Double minScore,
                                                     @RequestParam(required = false) String[] type,
-                                                    @RequestParam int maxNHits) throws IOException {
+                                                    @RequestParam int maxNHits,
+                                                    @RequestParam(required = false) String sortRating,
+                                                    @RequestParam(required = false) String sortYear,
+                                                    @RequestParam(required = false) String sortNumVotes) throws IOException {
 
         Filters filter=Filters.builder()
                 .type(type)
@@ -48,7 +52,13 @@ public class SearchController  {
                 .maxScore(maxScore)
                 .build();
 
-        return new ResponseEntity<>(elasticService.getQuery(filter,maxNHits),HttpStatus.ACCEPTED);
+        Sort sort= Sort.builder()
+                .sortRating(sortRating)
+                .sortYear(sortYear)
+                .sortNumVotes(sortNumVotes)
+                .build();
+
+        return new ResponseEntity<>(elasticService.getQuery(filter,maxNHits,sort),HttpStatus.ACCEPTED);
     }
 
 
