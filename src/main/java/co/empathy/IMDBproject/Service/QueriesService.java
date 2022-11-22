@@ -43,8 +43,8 @@ public class QueriesService {
         //genres just to test
        Map<String,Aggregation> map=aggregationTerms();
        List<SortOptions> list= new ArrayList<>();
-       sort(list,"averageRating","");
-        sort(list,"startYear","asc");
+       sort(list,"averageRating","desc");
+        sort(list,"numVotes","desc");
         SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
@@ -122,7 +122,7 @@ public class QueriesService {
     /**
      * Runs an aggregation
      * @return a map with the aggregations as value
-     * @throws IOException
+     *
      */
 
     public Map<String,Aggregation> aggregationTerms() {
