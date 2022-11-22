@@ -2,7 +2,6 @@ package co.empathy.IMDBproject.Controller;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.empathy.IMDBproject.Model.Filters;
-import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
 import co.empathy.IMDBproject.Model.Sort;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
@@ -64,7 +63,7 @@ public class SearchController  {
 
 
     @GetMapping("/search/text")
-    public ResponseEntity<Response> getSearchMovies( @RequestParam(required = true) String searchText) throws IOException {
+    public ResponseEntity<Response> getSearchMovies( @RequestParam String searchText) throws IOException {
         System.out.println(searchText);
         return new ResponseEntity<>(elasticService.getSearchQuery(searchText),HttpStatus.ACCEPTED);
     }
