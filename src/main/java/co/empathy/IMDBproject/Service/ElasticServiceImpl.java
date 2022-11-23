@@ -7,6 +7,7 @@ import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 
 import co.empathy.IMDBproject.Model.Response;
+import co.empathy.IMDBproject.Model.Sort;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -64,12 +65,10 @@ public class ElasticServiceImpl implements ElasticService {
         List<Movie> movieList = new ArrayList<>();
         Movie movie;
         int countMovies = 0;
-        int totalMovies=0;
-        //CHANGEEEEEEEE IT
-        //while(totalMovies<10000){
+
         while(imdb.moreLines) {
             movie=imdb.readMovie();
-            totalMovies++;
+
             if (movie!=null) {
                 //add the movie to the list
                 data.moviesList(movieList, movie);
@@ -94,8 +93,8 @@ public class ElasticServiceImpl implements ElasticService {
         return true;
 }
 
-    public Response getQuery(Filters filter, int maxHits) throws IOException {
-        return elasticEngine.getQuery(filter,maxHits);
+    public Response getQuery(Filters filter, int maxHits, Sort sort) throws IOException {
+        return elasticEngine.getQuery(filter,maxHits, sort);
 
     }
 

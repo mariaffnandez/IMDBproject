@@ -3,8 +3,7 @@ package co.empathy.IMDBproject.Model;
 import lombok.Builder;
 import lombok.Value;
 
-//@Data
-//@NoArgsConstructor
+
 @Value
 @Builder
 public class Filters {

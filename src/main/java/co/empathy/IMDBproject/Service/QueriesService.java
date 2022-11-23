@@ -14,10 +14,13 @@ import co.empathy.IMDBproject.Model.Facets.Values;
 import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
+import co.empathy.IMDBproject.Model.Sort;
 
 
 import java.io.IOException;
 import java.util.*;
+
+import static java.util.Objects.nonNull;
 
 public class QueriesService {
     private ElasticsearchClient client;
@@ -38,14 +41,13 @@ public class QueriesService {
      * @return a Response with the List<Movie> and the facets
      * @throws IOException
      */
-    public Response responseToQuery(Query query,int maxHits) throws IOException {
+    public Response responseToQuery(Query query,int maxHits, Sort sort) throws IOException {
         Response customResponse= new Response();
-        //genres just to test
+
        Map<String,Aggregation> map=aggregationTerms();
-       List<SortOptions> list= new ArrayList<>();
-       sort(list,"averageRating","desc");
-        sort(list,"numVotes","desc");
-        SearchResponse response = client.search(s -> s
+       List<SortOptions> list= sortOptions(sort);
+
+       SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
                         .size(maxHits)
@@ -102,7 +104,7 @@ public class QueriesService {
     public Response searchQuery(String searchText) throws IOException {
         List<String> fields=Arrays.asList("primaryTitle","originalTitle");
         int maxHits= 1000;
-        return responseToQuery(queryProvider.multiMatchquery(searchText,fields),maxHits);
+        return responseToQuery(queryProvider.multiMatchquery(searchText,fields),maxHits, null);
     }
 
     /**
@@ -111,11 +113,11 @@ public class QueriesService {
      * @return a response to the query with these filters
      * @throws IOException
      */
-    public Response filterQuery(Filters filter,int maxHits) throws IOException {
+    public Response filterQuery(Filters filter,int maxHits,Sort sort) throws IOException {
 
         Query query= queryProvider.getFilterQuery(filter);
         System.out.println(query.toString());
-        return responseToQuery(query, maxHits);
+        return responseToQuery(query, maxHits,sort);
 
     }
 
@@ -155,20 +157,43 @@ public class QueriesService {
     }
 
     /**
-     * Adds to the list a sortOption
-     * @param list, list with sortOptions
-     * @param field, the movie´s field (number type as startYear, averageRating,runtimeMinutes...)
-     * @param order asc/desc order
+     *
+     * @param sorts, a sort object
+     * @return a list with the sortOptions
      */
+    public List<SortOptions> sortOptions(Sort sorts){
+        List<SortOptions> list= new ArrayList<>();
+        String asc="asc";
 
-    public void sort(List<SortOptions> list, String field, String order){
-        //desc order by default
-        SortOrder sortOrder=SortOrder.Desc;
-        if(order.equalsIgnoreCase("asc"))
-            sortOrder=SortOrder.Asc;
+        if(nonNull(sorts.getSortYear())) {
+            SortOrder order= SortOrder.Desc;
+            if (sorts.getSortYear().equalsIgnoreCase(asc)) {
+                order=SortOrder.Asc;
+            }
 
-        SortOrder finalSortOrder = sortOrder;
-        list.add(new SortOptions.Builder().field(f -> f.field(field).order(finalSortOrder)).build());
+            SortOrder finalOrder = order;
+            list.add(new SortOptions.Builder().field(f -> f.field("startYear").order(finalOrder)).build());
+        }
+        if(nonNull(sorts.getSortRating())) {
+            SortOrder order = SortOrder.Desc;
+            if (sorts.getSortRating().equalsIgnoreCase(asc)) {
+                order = SortOrder.Asc;
+            }
+
+            SortOrder finalOrder = order;
+            list.add(new SortOptions.Builder().field(f -> f.field("averageRating").order(finalOrder)).build());
+        }
+        if(nonNull(sorts.getSortNumVotes())) {
+            SortOrder order = SortOrder.Desc;
+            if (sorts.getSortNumVotes().equalsIgnoreCase(asc)) {
+                order = SortOrder.Asc;
+            }
+
+            SortOrder finalOrder = order;
+            list.add(new SortOptions.Builder().field(f -> f.field("numVotes").order(finalOrder)).build());
+        }
+
+        return list;
 
     }
 

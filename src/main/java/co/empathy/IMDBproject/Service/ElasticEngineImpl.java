@@ -15,6 +15,7 @@ import co.empathy.IMDBproject.Model.Movie.Movie;
 
 
 import co.empathy.IMDBproject.Model.Response;
+import co.empathy.IMDBproject.Model.Sort;
 
 
 import java.io.IOException;
@@ -140,9 +141,9 @@ public class ElasticEngineImpl implements ElasticEngine {
 
     }
     @Override
-    public Response getQuery(Filters filter, int maxHits) throws IOException {
+    public Response getQuery(Filters filter, int maxHits, Sort sort) throws IOException {
 
-        return new QueriesService(client).filterQuery(filter, maxHits);
+        return new QueriesService(client).filterQuery(filter, maxHits, sort);
 
     }
     @Override
