@@ -52,6 +52,7 @@ public class SearchController  {
                 .genre(genres)
                 .minScore(minScore)
                 .maxScore(maxScore)
+                .maxNHits(maxNHits)
                 .build();
 
         Sort sort= Sort.builder()
@@ -61,7 +62,7 @@ public class SearchController  {
                 .build();
 
 
-        return new ResponseEntity<>(elasticService.getQuery(filter,maxNHits,sort),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(elasticService.getQuery(filter,sort),HttpStatus.ACCEPTED);
     }
 
 

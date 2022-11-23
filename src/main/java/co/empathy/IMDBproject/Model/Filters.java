@@ -16,5 +16,6 @@ public class Filters {
     Integer maxMinutes;
     Integer minMinutes;
     String[] type;
+    Integer maxNHits;
 
 }

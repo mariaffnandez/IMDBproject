@@ -93,8 +93,8 @@ public class ElasticServiceImpl implements ElasticService {
         return true;
 }
 
-    public Response getQuery(Filters filter, int maxHits, Sort sort) throws IOException {
-        return elasticEngine.getQuery(filter,maxHits, sort);
+    public Response getQuery(Filters filter, Sort sort) throws IOException {
+        return elasticEngine.getQuery(filter,sort);
 
     }
 

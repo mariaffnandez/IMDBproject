@@ -36,19 +36,22 @@ public class QueriesService {
         this.queryProvider= new QueryProvider();
     }
 
+
+
     /**
      *
-     * @param query, this is the query part of the search request
+     * @param query this is the query part of the search request
+     * @param sort this is a sort object with the sorting options
      * @return a Response with the List<Movie> and the facets
      * @throws IOException
      */
-    public Response responseToQuery(Query query,Integer maxHits, Sort sort) throws IOException {
+
+    public Response responseToQuery(Query query, Sort sort) throws IOException {
         Response customResponse= new Response();
 
        Map<String,Aggregation> map=aggregationTerms();
        List<SortOptions> list= sortOptions(sort);
-       if (maxHits!=null)
-           maxNHits=maxHits;
+
 
        SearchResponse response = client.search(s -> s
                         .index(indexName)
@@ -106,8 +109,7 @@ public class QueriesService {
      */
     public Response searchQuery(String searchText) throws IOException {
         List<String> fields=Arrays.asList("primaryTitle","originalTitle");
-        int maxHits= 1000;
-        return responseToQuery(queryProvider.multiMatchquery(searchText,fields),maxHits, null);
+        return responseToQuery(queryProvider.multiMatchquery(searchText,fields), null);
     }
 
     /**
@@ -116,11 +118,13 @@ public class QueriesService {
      * @return a response to the query with these filters
      * @throws IOException
      */
-    public Response filterQuery(Filters filter,int maxHits,Sort sort) throws IOException {
+    public Response filterQuery(Filters filter,Sort sort) throws IOException {
 
         Query query= queryProvider.getFilterQuery(filter);
         System.out.println(query.toString());
-        return responseToQuery(query, maxHits,sort);
+        if (nonNull(filter.getMaxNHits()))
+            maxNHits= filter.getMaxNHits();
+        return responseToQuery(query,sort);
 
     }
 
