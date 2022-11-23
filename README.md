@@ -7,11 +7,12 @@ Creating an IMDB-like search engine using Elasticsearch
 
 ### Installation
 
-1. Clone the repo
+1. Clone the repo (provisionally)
    ```sh
-   git clone https://github.com/mariaffnandez/IMDBproject.git
+   git clone -b New_features https://github.com/mariaffnandez/IMDBproject.git
 
    ```
+   
 2. Run the project
    ```sh
    docker-compose up –-build -d
