@@ -28,6 +28,7 @@ public class QueriesService {
     String indexName= "imdb";
     String genres= "genres";
     String titleType="titleType";
+    Integer maxNHits= 500; //number of hits returned by default
 
     public QueriesService(ElasticsearchClient elasticClient) {
 
@@ -41,16 +42,18 @@ public class QueriesService {
      * @return a Response with the List<Movie> and the facets
      * @throws IOException
      */
-    public Response responseToQuery(Query query,int maxHits, Sort sort) throws IOException {
+    public Response responseToQuery(Query query,Integer maxHits, Sort sort) throws IOException {
         Response customResponse= new Response();
 
        Map<String,Aggregation> map=aggregationTerms();
        List<SortOptions> list= sortOptions(sort);
+       if (maxHits!=null)
+           maxNHits=maxHits;
 
        SearchResponse response = client.search(s -> s
                         .index(indexName)
                         .query(query)
-                        .size(maxHits)
+                        .size(maxNHits)
                         .sort(list)
                         .aggregations(genres, map.get(genres))
                         .aggregations(titleType,map.get(titleType))

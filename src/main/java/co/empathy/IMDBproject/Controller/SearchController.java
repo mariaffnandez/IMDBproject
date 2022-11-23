@@ -37,12 +37,12 @@ public class SearchController  {
                                                     @RequestParam(required = false) Double maxScore,
                                                     @RequestParam(required = false) Double minScore,
                                                     @RequestParam(required = false) String[] type,
-                                                    @RequestParam (required = false) int maxNHits,
+                                                    @RequestParam (required = false) Integer maxNHits,
                                                     @RequestParam(required = false) String sortRating,
                                                     @RequestParam(required = false) String sortYear,
                                                     @RequestParam(required = false) String sortNumVotes) throws IOException {
 
-        int nHits=500; //number of hits returned by default
+
         Filters filter=Filters.builder()
                 .type(type)
                 .maxMinutes(maxMinutes)
@@ -59,11 +59,9 @@ public class SearchController  {
                 .sortYear(sortYear)
                 .sortNumVotes(sortNumVotes)
                 .build();
-        if (nonNull(maxNHits)){
-            nHits= maxNHits;
-        }
 
-        return new ResponseEntity<>(elasticService.getQuery(filter,nHits,sort),HttpStatus.ACCEPTED);
+
+        return new ResponseEntity<>(elasticService.getQuery(filter,maxNHits,sort),HttpStatus.ACCEPTED);
     }
 
 
