@@ -3,12 +3,28 @@
 ## Empathy Academy: Learning project
 
 
-Creating an IMDB-like search engine
+Creating an IMDB-like search engine using Elasticsearch
 
-Using Elasticsearch
+### Installation
 
+1. Clone the repo
+   ```sh
+   git clone https://github.com/mariaffnandez/IMDBproject.git
+
+   ```
+2. Run the project
+   ```sh
+   docker compose up –build -d
+
+   ```
+    ```sh
+   docker compose up -d
+
+   ```
 ### Endpoints:
-#### /search 
+#### `/search`
+It´s used to search movies using filters
+
 Parameters:
 - **genres** (String) - Value of genres to filter by. Multiple genres should be sent separeted by commas (e.g genres=Action,Sci-Fi)  
 - **type** (String) - Value of title type to filter by. Values send in the same way as genres parameter 
@@ -23,7 +39,16 @@ Parameters:
 - **sortNumVotes** (String) - (asc/desc) The ordering of the sort. 
 - **sortYear** (String) - (asc/desc) The ordering of the sort. 
 
+
+#### `/index`
+It´s used to create an index of documents from different files
+
+Parameters:
+- **basics** * - File containing the basics information (title.basics.tsv)
+- **ratings** * - File containing the ratings information (title.ratings.tsv)
+- **akas** * - File containing the ratings information (title.rating.tsv)
+- **principals** * - File containing the principals information (title.principals.tsv)
+- **crew** * - File containing the crew information (title.crew.tsv)
+- **episodes** * - File containing the episodes information (title.episode.tsv)
+
 <sub>* required </sub>
-
-#### /index
-
