@@ -42,7 +42,7 @@ public class SearchController  {
                                                     @RequestParam(required = false) String sortYear,
                                                     @RequestParam(required = false) String sortNumVotes) throws IOException {
 
-        int nHits=1000; //number of hits returned by default
+        int nHits=500; //number of hits returned by default
         Filters filter=Filters.builder()
                 .type(type)
                 .maxMinutes(maxMinutes)
