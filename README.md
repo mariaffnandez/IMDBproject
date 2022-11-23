@@ -27,8 +27,8 @@ Creating an IMDB-like search engine using Elasticsearch
 It´s used to search movies using filters
 
 Parameters:
-- **genres** (String) - Value of genres to filter by multiple genres. Should be sent separeted by commas (e.g genres=Action,Sci-Fi)  
-- **type** (String) - Value of title type to filter by values. Should be send in the same way as genres parameter 
+- **genres** (String) - Value of genres to filter by multiple genres. It should be sent separeted by commas (e.g genres=Action,Sci-Fi)  
+- **type** (String) - Value of title type to filter by values. It should be send in the same way as genres parameter 
 - **maxYear** (Integer) - Max value of start year to filter by 
 - **minYear** (Integer) - Min value of start year to filter by
 - **maxMinutes** (Integer) - Max value of runtime minutes to filter by
