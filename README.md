@@ -14,11 +14,11 @@ Creating an IMDB-like search engine using Elasticsearch
    ```
 2. Run the project
    ```sh
-   docker compose up –build -d
+   docker-compose up –-build -d
 
    ```
     ```sh
-   docker compose up -d
+   docker-compose up -d
 
    ```
 ### Endpoints:
