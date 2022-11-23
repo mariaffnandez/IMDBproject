@@ -34,7 +34,7 @@ Parameters:
 - **minMinutes** (Integer) - Min value of runtime minutes to filter by
 - **maxScore** (Double) - Max value of average rating to filter by
 - **minScore** (Double) - Min value of average rating to filter by
-- **maxNHits**  (Integer)  - Upper bound of the number of hits returned (1000 by default)
+- **maxNHits**  (Integer)  - Upper bound of the number of hits returned (500 by default)
 - **sortRating** (String) - (asc/desc) The ordering of the sort. 
 - **sortNumVotes** (String) - (asc/desc) The ordering of the sort. 
 - **sortYear** (String) - (asc/desc) The ordering of the sort. 
