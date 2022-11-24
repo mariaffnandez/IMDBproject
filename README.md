@@ -22,8 +22,16 @@ Creating an IMDB-like search engine using Elasticsearch
    docker-compose up -d
 
    ```
+3. To shut down containers:
+   ```sh
+   docker-compose down
+
+   ```
+
+
 ### Endpoints:
-#### `/search`
+
+#### `GET /search`
 It´s used to search movies using filters
 
 Parameters:
@@ -41,7 +49,10 @@ Parameters:
 - **sortYear** (String) - (asc/desc) The ordering of the sort 
 
 
-#### `/index`
+Example: `http://localhost:8080/search?maxYear=2022&minYear=2019&genres=Action&sortYear=Asc`
+
+ 
+#### `POST /index`
 It´s used to create an index of documents from different files
 
 Parameters:
