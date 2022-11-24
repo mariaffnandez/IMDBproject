@@ -5,10 +5,15 @@ import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Response;
 import co.empathy.IMDBproject.Model.Sort;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
+import io.swagger.v3.oas.annotations.media.Content;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.io.IOException;
 
@@ -16,11 +21,12 @@ import static java.util.Objects.nonNull;
 
 
 @RestController
+@Tag (name="Search")
 public class SearchController  {
     @Autowired
 
     private ElasticServiceImpl elasticService;
-    private ElasticsearchClient client;
+
 
     public SearchController(ElasticServiceImpl elasticService) {
 
@@ -28,6 +34,13 @@ public class SearchController  {
     }
 
 
+
+    @Operation(summary = "Get movies using filters")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieves documents matching the query"
+                    , content = {@Content(mediaType = "application/json")}),
+
+            @ApiResponse(responseCode = "400", description = "Invalid query", content = @Content) })
     @GetMapping("/search")
     public ResponseEntity<Response> getMovies(   @RequestParam(required = false) String [] genres,
                                                     @RequestParam(required = false) Integer maxYear,
@@ -61,8 +74,9 @@ public class SearchController  {
                 .sortNumVotes(sortNumVotes)
                 .build();
 
+        Response response=elasticService.getQuery(filter,sort);
 
-        return new ResponseEntity<>(elasticService.getQuery(filter,sort),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
 

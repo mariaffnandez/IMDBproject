@@ -55,41 +55,48 @@ public class ElasticServiceImpl implements ElasticService {
     @Override
     public Boolean indexIMDBData(MultipartFile basicsFile, MultipartFile ratingFile, MultipartFile akasFile,MultipartFile crewFile,MultipartFile principalsFile) throws IOException {
 
+        try {
+            if (basicsFile.isEmpty()||ratingFile.isEmpty()||akasFile.isEmpty()||crewFile.isEmpty()||principalsFile.isEmpty())
+                throw new IOException();
 
-        imdb = new IMDbReader(basicsFile, ratingFile, akasFile,crewFile,principalsFile);
-        imdb.initializeLines();
-        //create imdb index and set the mapping properties
-        createIndex(imdbIndex,data.jsonMapping());
+            imdb = new IMDbReader(basicsFile, ratingFile, akasFile, crewFile, principalsFile);
+            imdb.initializeLines();
+            //create imdb index and set the mapping properties
+            createIndex(imdbIndex, data.jsonMapping());
 
 
-        List<Movie> movieList = new ArrayList<>();
-        Movie movie;
-        int countMovies = 0;
+            List<Movie> movieList = new ArrayList<>();
+            Movie movie;
+            int countMovies = 0;
 
-        while(imdb.moreLines) {
-            movie=imdb.readMovie();
+            while (imdb.moreLines) {
+                movie = imdb.readMovie();
 
-            if (movie!=null) {
-                //add the movie to the list
-                data.moviesList(movieList, movie);
-                countMovies++;
+                if (movie != null) {
+                    //add the movie to the list
+                    data.moviesList(movieList, movie);
+                    countMovies++;
+                }
+                if (countMovies == blockMovies) {
+                    //index a "small" movie's list
+                    elasticEngine.indexMultipleDocs(imdbIndex, movieList);
+
+
+                    //prepare the next list
+                    countMovies = 0;
+                    movieList.clear();
+                }
             }
-            if (countMovies==blockMovies ){
-                //index a "small" movie's list
-                elasticEngine.indexMultipleDocs(imdbIndex,movieList);
+            //index the last list if is not empty
 
-
-                //prepare the next list
-                countMovies=0;
-                movieList.clear();
-            }
+            elasticEngine.indexMultipleDocs(imdbIndex, movieList);
+            System.out.println("Indexed");
         }
-        //index the last list if is not empty
+        catch (IOException e){
+            throw e;
+        }
 
-        elasticEngine.indexMultipleDocs(imdbIndex,movieList);
 
-
-        System.out.println("Indexed");
         return true;
 }
 

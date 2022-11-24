@@ -70,13 +70,12 @@ public class ElasticEngineImpl implements ElasticEngine {
                 System.out.println("Deleted");
                 return true;
             }
-            else{
+            else
                 return false;
-            }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 
     }
     @Override
