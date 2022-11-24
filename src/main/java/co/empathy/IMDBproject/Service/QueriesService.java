@@ -36,7 +36,6 @@ public class QueriesService {
     }
 
 
-
     /**
      *
      * @param query this is the query part of the search request
@@ -51,8 +50,7 @@ public class QueriesService {
        Map<String,Aggregation> map=aggregationTerms();
        List<SortOptions> list= sortOptions(sort);
 
-
-       SearchResponse response = client.search(s -> s
+       SearchResponse searchResponse = client.search(s -> s
                         .index(indexName)
                         .query(query)
                         .size(maxNHits)
@@ -63,11 +61,9 @@ public class QueriesService {
                         ,
                 Movie.class
         );
-        customResponse.setHits(hits(response));
-        ArrayList<Facets> facets= new ArrayList<>();
-        facets.add(aggregationsResponse(response,genres));
-        facets.add(aggregationsResponse(response,titleType));
-        customResponse.setFacets(facets);
+        customResponse.setHits(hits(searchResponse));
+        addFacetsToResponse(searchResponse,customResponse);
+
 
         return customResponse;
 
@@ -136,8 +132,8 @@ public class QueriesService {
     public Map<String,Aggregation> aggregationTerms() {
 
        Map<String,Aggregation> map= new HashMap<>();
-       map.put(genres,Aggregation.of(a -> a.terms(h -> h.field("genres"))));
-       map.put(titleType,Aggregation.of(a -> a.terms(h -> h.field("titleType"))));
+       map.put(genres,Aggregation.of(a -> a.terms(h -> h.field(genres))));
+       map.put(titleType,Aggregation.of(a -> a.terms(h -> h.field(titleType))));
 
         return map;
 
@@ -159,6 +155,8 @@ public class QueriesService {
             valuesList.add(new Values(bucket.key().stringValue(),bucket.docCount()));
 
         }
+        if (valuesList.isEmpty())
+            return null;
         return new Facets("value","facet"+field,valuesList);
     }
 
@@ -204,6 +202,15 @@ public class QueriesService {
     }
 
 
+    public void addFacetsToResponse(SearchResponse searchResponse, Response customResponse) {
+        ArrayList<Facets> facets= new ArrayList<>();
+       if (nonNull(aggregationsResponse(searchResponse, genres)))
+           facets.add(aggregationsResponse(searchResponse, genres));
 
+        if (nonNull(aggregationsResponse(searchResponse, titleType)))
+            facets.add(aggregationsResponse(searchResponse, titleType));
+
+        customResponse.setFacets(facets);
+    }
 
 }
