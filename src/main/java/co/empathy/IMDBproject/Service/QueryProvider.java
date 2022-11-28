@@ -1,10 +1,13 @@
 package co.empathy.IMDBproject.Service;
 
 import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.ScoreSort;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.json.JsonData;
 import co.empathy.IMDBproject.Model.Filters;
-import org.apache.lucene.queryparser.xml.builders.TermsQueryBuilder;
+
 
 
 import java.io.IOException;
@@ -97,6 +100,7 @@ public class QueryProvider {
                 .fields(fields)
                 .query(value)
         )._toQuery();
+
 
     }
 

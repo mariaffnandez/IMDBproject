@@ -16,7 +16,9 @@ import co.empathy.IMDBproject.Model.Response;
 import co.empathy.IMDBproject.Model.Sort;
 
 
+
 import java.io.IOException;
+import java.nio.ShortBuffer;
 import java.util.*;
 
 import static java.util.Objects.nonNull;
@@ -28,6 +30,7 @@ public class QueriesService {
     String genres= "genres";
     String titleType="titleType";
     Integer maxNHits= 500; //number of hits returned by default
+    private ShortBuffer f;
 
     public QueriesService(ElasticsearchClient elasticClient) {
 
@@ -48,8 +51,9 @@ public class QueriesService {
         Response customResponse= new Response();
 
        Map<String,Aggregation> map=aggregationTerms();
-       List<SortOptions> list= sortOptions(sort);
 
+       List<SortOptions> list= sortOptions(sort);
+       System.out.println(list.size());
        SearchResponse searchResponse = client.search(s -> s
                         .index(indexName)
                         .query(query)
@@ -169,33 +173,36 @@ public class QueriesService {
         List<SortOptions> list= new ArrayList<>();
         String asc="asc";
 
-        if(nonNull(sorts.getSortYear())) {
-            SortOrder order= SortOrder.Desc;
-            if (sorts.getSortYear().equalsIgnoreCase(asc)) {
-                order=SortOrder.Asc;
-            }
+        if (nonNull(sorts)) {
+            if (nonNull(sorts.getSortYear())) {
+                SortOrder order = SortOrder.Desc;
+                if (sorts.getSortYear().equalsIgnoreCase(asc)) {
+                    order = SortOrder.Asc;
+                }
 
-            SortOrder finalOrder = order;
-            list.add(new SortOptions.Builder().field(f -> f.field("startYear").order(finalOrder)).build());
-        }
-        if(nonNull(sorts.getSortRating())) {
-            SortOrder order = SortOrder.Desc;
-            if (sorts.getSortRating().equalsIgnoreCase(asc)) {
-                order = SortOrder.Asc;
+                SortOrder finalOrder = order;
+                list.add(new SortOptions.Builder().field(f -> f.field("startYear").order(finalOrder)).build());
             }
+            if (nonNull(sorts.getSortRating())) {
+                SortOrder order = SortOrder.Desc;
+                if (sorts.getSortRating().equalsIgnoreCase(asc)) {
+                    order = SortOrder.Asc;
+                }
 
-            SortOrder finalOrder = order;
-            list.add(new SortOptions.Builder().field(f -> f.field("averageRating").order(finalOrder)).build());
-        }
-        if(nonNull(sorts.getSortNumVotes())) {
-            SortOrder order = SortOrder.Desc;
-            if (sorts.getSortNumVotes().equalsIgnoreCase(asc)) {
-                order = SortOrder.Asc;
+                SortOrder finalOrder = order;
+                list.add(new SortOptions.Builder().field(f -> f.field("averageRating").order(finalOrder)).build());
             }
+            if (nonNull(sorts.getSortNumVotes())) {
 
-            SortOrder finalOrder = order;
-            list.add(new SortOptions.Builder().field(f -> f.field("numVotes").order(finalOrder)).build());
+                if (sorts.getSortNumVotes().equalsIgnoreCase(asc)) {
+                    list.add(new SortOptions.Builder().field(f -> f.field("numVotes").order(SortOrder.Asc)).build());
+                }
+
+            }
         }
+        //by default, it orders by numVotes
+        list.add(new SortOptions.Builder().field(f -> f.field("numVotes").order(SortOrder.Desc)).build());
+
 
         return list;
 
