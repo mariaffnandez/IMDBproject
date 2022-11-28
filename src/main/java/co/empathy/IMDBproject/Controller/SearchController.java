@@ -5,6 +5,7 @@ import co.empathy.IMDBproject.Model.Filters;
 import co.empathy.IMDBproject.Model.Response;
 import co.empathy.IMDBproject.Model.Sort;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.media.Content;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,8 +35,8 @@ public class SearchController  {
     }
 
 
+    @ApiOperation(value = "Get movies using filters", response = Response.class)
 
-    @Operation(summary = "Get movies using filters")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retrieves documents matching the query"
                     , content = {@Content(mediaType = "application/json")}),
