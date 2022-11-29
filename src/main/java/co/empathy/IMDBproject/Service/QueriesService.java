@@ -128,7 +128,7 @@ public class QueriesService {
     }
 
     /**
-     * Runs an aggregation
+     * Runs an aggregation (genres and type)
      * @return a map with the aggregations as value
      *
      */
@@ -167,7 +167,7 @@ public class QueriesService {
     /**
      *
      * @param sorts, a sort object
-     * @return a list with the sortOptions
+     * @return a list with the sortOptions that can be: sort by startYear, averageRating or numVotes (by default)
      */
     public List<SortOptions> sortOptions(Sort sorts){
         List<SortOptions> list= new ArrayList<>();
@@ -197,17 +197,20 @@ public class QueriesService {
                 if (sorts.getSortNumVotes().equalsIgnoreCase(asc)) {
                     list.add(new SortOptions.Builder().field(f -> f.field("numVotes").order(SortOrder.Asc)).build());
                 }
-
             }
         }
         //by default, it orders by numVotes
         list.add(new SortOptions.Builder().field(f -> f.field("numVotes").order(SortOrder.Desc)).build());
 
-
         return list;
 
     }
 
+    /**
+     * Adds the aggregation response (just genres and type) to the Response
+     * @param searchResponse, the searchResponse to the query
+     * @param customResponse, the Response object that the api will return
+     */
 
     public void addFacetsToResponse(SearchResponse searchResponse, Response customResponse) {
         ArrayList<Facets> facets= new ArrayList<>();

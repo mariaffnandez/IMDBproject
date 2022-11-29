@@ -21,14 +21,6 @@ public class ClientConfig {
 
 // This is the configuration class where we'll define our beans (objects whose lifecycle is managed by Spring)
 
-    @Bean
-    public ElasticServiceImpl searchService(ElasticEngine searchEngine) {
-        return new ElasticServiceImpl(searchEngine);
-    }
-    @Bean
-    public ElasticEngine elasticEngine(ElasticsearchClient elasticClient) {
-        return new ElasticEngineImpl(elasticClient);
-    }
 
     @Bean
     public RestClient lowClient() {

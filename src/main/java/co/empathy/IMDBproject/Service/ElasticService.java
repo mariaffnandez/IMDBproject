@@ -9,7 +9,6 @@ import java.io.InputStream;
 
 
 public interface ElasticService {
-    String listIndices() throws IOException;
 
     Boolean createIndex(String name, InputStream mapping);
      Boolean deleteIndex(String name);

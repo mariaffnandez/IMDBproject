@@ -32,11 +32,6 @@ public class ElasticServiceImpl implements ElasticService {
     }
 
     @Override
-    public String listIndices() throws IOException {
-        return elasticEngine.listIndices();
-    }
-
-    @Override
     public Boolean createIndex(String name, InputStream mapping) {
         return elasticEngine.createIndex(name, mapping);
     }
