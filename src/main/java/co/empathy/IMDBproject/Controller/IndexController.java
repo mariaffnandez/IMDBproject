@@ -42,7 +42,8 @@ public class IndexController {
     @Operation(summary = "Index a single movie")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully indexed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request") })
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "500", description = "Something went wrong indexing the doc")})
 
     @PostMapping("/{indexName}/_doc")
     public ResponseEntity indexDoc(@PathVariable String indexName, @RequestBody Movie movie) throws IOException {
@@ -56,7 +57,8 @@ public class IndexController {
     @Operation(summary = "Delete an indices")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted"),
-            @ApiResponse(responseCode = "400", description = "Bad Request") })
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "500", description = "Something went wrong while deleting")})
 
     @DeleteMapping("/{indexName}")public ResponseEntity deleteIndex(@PathVariable String indexName) throws IOException {
 
@@ -72,7 +74,8 @@ public class IndexController {
     @Operation(summary = "Creates a new 'IMDb' index")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Successfully indexed"),
-            @ApiResponse(responseCode = "400", description = "Bad Request") })
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "500", description = "Something went wrong while indexing")})
 
     @PostMapping(value="/index", consumes = {"multipart/form-data"})
     public ResponseEntity<String> indexDoc(@RequestParam("basics") MultipartFile basicsFile,

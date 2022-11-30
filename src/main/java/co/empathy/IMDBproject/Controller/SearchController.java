@@ -1,9 +1,9 @@
 package co.empathy.IMDBproject.Controller;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.empathy.IMDBproject.Model.Filters;
+
+import co.empathy.IMDBproject.Model.Query.Filters;
 import co.empathy.IMDBproject.Model.Response;
-import co.empathy.IMDBproject.Model.Sort;
+import co.empathy.IMDBproject.Model.Query.Sort;
 import co.empathy.IMDBproject.Service.ElasticServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.io.IOException;
 
-import static java.util.Objects.nonNull;
 
 
 @RestController
@@ -40,8 +38,8 @@ public class SearchController  {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retrieves documents matching the query"
                     , content = {@Content(mediaType = "application/json")}),
-
-            @ApiResponse(responseCode = "400", description = "Invalid query", content = @Content) })
+            @ApiResponse(responseCode = "400", description = "Invalid query", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Bad Request")})
     @GetMapping("/search")
     public ResponseEntity<Response> getMovies(   @RequestParam(required = false) String [] genres,
                                                     @RequestParam(required = false) Integer maxYear,
@@ -81,7 +79,7 @@ public class SearchController  {
     }
 
 
-
+    @ApiOperation(value = "Search movies by a text", response = Response.class)
     @GetMapping("/search/text")
     public ResponseEntity<Response> getSearchMovies( @RequestParam String searchText) throws IOException {
         System.out.println(searchText);

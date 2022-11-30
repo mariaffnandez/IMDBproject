@@ -1,4 +1,4 @@
-package co.empathy.IMDBproject.Model;
+package co.empathy.IMDBproject.Model.Query;
 
 import lombok.Builder;
 import lombok.Value;

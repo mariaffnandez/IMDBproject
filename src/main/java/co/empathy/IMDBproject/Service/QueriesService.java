@@ -10,15 +10,15 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.TotalHits;
 import co.empathy.IMDBproject.Model.Facets.Facets;
 import co.empathy.IMDBproject.Model.Facets.Values;
-import co.empathy.IMDBproject.Model.Filters;
+import co.empathy.IMDBproject.Model.Query.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 import co.empathy.IMDBproject.Model.Response;
-import co.empathy.IMDBproject.Model.Sort;
+import co.empathy.IMDBproject.Model.Query.Sort;
 
 
 
 import java.io.IOException;
-import java.nio.ShortBuffer;
+
 import java.util.*;
 
 import static java.util.Objects.nonNull;
@@ -29,8 +29,8 @@ public class QueriesService {
     String indexName= "imdb";
     String genres= "genres";
     String titleType="titleType";
-    Integer maxNHits= 500; //number of hits returned by default
-    private ShortBuffer f;
+    Integer maxNHits= 100; //number of hits returned by default
+
 
     public QueriesService(ElasticsearchClient elasticClient) {
 
@@ -82,7 +82,6 @@ public class QueriesService {
     public List<Movie> hits (SearchResponse<Movie> response ){
 
         TotalHits total = response.hits().total();
-        System.out.println("Total hits "+total.value());
         List <Movie> filmHits= new ArrayList<>();
         if (total.value()!=0) {
             List<Hit<Movie>> hits = response.hits().hits();

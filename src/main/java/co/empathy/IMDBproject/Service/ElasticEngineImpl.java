@@ -2,20 +2,18 @@ package co.empathy.IMDBproject.Service;
 
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
-import co.empathy.IMDBproject.Model.Facets.Facets;
-import co.empathy.IMDBproject.Model.Filters;
+import co.empathy.IMDBproject.Model.Query.Filters;
 import co.empathy.IMDBproject.Model.Movie.Movie;
 
 
 import co.empathy.IMDBproject.Model.Response;
-import co.empathy.IMDBproject.Model.Sort;
+import co.empathy.IMDBproject.Model.Query.Sort;
 
 
 import java.io.IOException;
@@ -30,17 +28,8 @@ public class ElasticEngineImpl implements ElasticEngine {
         this.client = elasticClient;
     }
 
-    @Override
-    public String listIndices() throws IOException {
-        try {
-            return client.cat().indices().toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
 
-    //Receives an index name and a json with settings, mappings, aliases...
     @Override
     public Boolean createIndex(String name, InputStream mapping) {
 
@@ -61,6 +50,8 @@ public class ElasticEngineImpl implements ElasticEngine {
 
         }
     }
+
+
     @Override
     public Boolean deleteIndex(String indexName) {
         try {
@@ -78,6 +69,8 @@ public class ElasticEngineImpl implements ElasticEngine {
 
 
     }
+
+
     @Override
     public Boolean indexDoc(String indexName, Movie movie) {
         try {
@@ -105,9 +98,10 @@ public class ElasticEngineImpl implements ElasticEngine {
         }
     }
 
+
     @Override
 
-    public Boolean indexMultipleDocs(String indexName, List<Movie> movies) throws IOException {
+    public Boolean indexMultipleDocs(String indexName, List<Movie> movies) {
         boolean response=false;
         if (!movies.isEmpty()) {
             try {
@@ -139,12 +133,17 @@ public class ElasticEngineImpl implements ElasticEngine {
 
 
     }
+
+
+
     @Override
     public Response getQuery(Filters filter, Sort sort) throws IOException {
 
         return new QueriesService(client).filterQuery(filter, sort);
 
     }
+
+
     @Override
     public Response getSearchQuery(String searchText) throws IOException {
 
