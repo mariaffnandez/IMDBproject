@@ -1,15 +1,10 @@
 package co.empathy.IMDBproject.Help;
 
 import co.empathy.IMDBproject.Model.Movie.*;
-import org.springframework.core.io.ClassPathResource;
 
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 public class IMDbData {
@@ -86,6 +81,12 @@ public class IMDbData {
             movie.getAkas().add(aka);
         }
     }
+
+    /**
+     *
+     * @param line, a line from the starring file
+     * @return a starring object which contains all the necessary info
+     */
     public Starring readStarring(String line){
         Starring starring= new Starring();
         if (line != null) {
@@ -97,12 +98,24 @@ public class IMDbData {
         }
         return starring;
     }
+
+    /**
+     *
+     * @param starring, the starring object
+     * @param movie, the movie in which the starring object will be added to
+     */
     public void setStarring(Starring starring, Movie movie) {
 
         if (starring != null) {
             movie.getStarring().add(starring);
         }
     }
+
+    /**
+     *
+     * @param line a line from the directors file
+     * @param movie, the movie in which the director object will be added to
+     */
     public void setDirector(String line,Movie movie){
 
         if (line != null) {
@@ -189,6 +202,11 @@ public class IMDbData {
         return result;
 
     }
+
+    /**
+     *
+     * @param movie the movie to create new akas, starring and directors arrays
+     */
     public void initializeListMovie(Movie movie){
         movie.setAkas(new ArrayList());
         movie.setStarring(new ArrayList());
@@ -196,8 +214,5 @@ public class IMDbData {
     }
 
 
-    public InputStream jsonMapping() throws IOException {
-        InputStream mappingInputStream = new ClassPathResource("static/mapping.json").getInputStream();
-        return mappingInputStream;
-    }
+
 }

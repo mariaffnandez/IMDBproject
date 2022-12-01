@@ -1,4 +1,4 @@
-package co.empathy.IMDBproject.Model;
+package co.empathy.IMDBproject.Model.Query;
 
 import lombok.Builder;
 import lombok.Value;
@@ -16,5 +16,6 @@ public class Filters {
     Integer maxMinutes;
     Integer minMinutes;
     String[] type;
+    Integer maxNHits;
 
 }

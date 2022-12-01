@@ -9,11 +9,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class IMDbReader {
-    private  BufferedReader basicsReader;
-    private BufferedReader ratingsReader;
-    private BufferedReader akasReader;
-    private BufferedReader crewReader;
-    private BufferedReader principalsReader;
+    private final  BufferedReader basicsReader;
+    private final BufferedReader ratingsReader;
+    private final BufferedReader akasReader;
+    private final BufferedReader crewReader;
+    private final BufferedReader principalsReader;
     String ratingLine;
     String akasLine;
     String crewLine;
@@ -34,7 +34,13 @@ public class IMDbReader {
 
 
     }
-    //returns the movie with all the info readed from the files
+
+
+    /**
+     *
+     * @return the movie with all the info read from the files
+     * @throws IOException
+     */
     public Movie readMovie () throws IOException {
 
         String basicLine;
@@ -52,7 +58,7 @@ public class IMDbReader {
                 moreLines = false;
 
             //set ratings
-            //if the rating id is smaller that the movie'id read the next line
+            //if the rating id is smaller that the movie's id read the next line
             if (data.smallerID(ratingLine,basicLine))
                 ratingLine=ratingsReader.readLine();
 
@@ -65,14 +71,14 @@ public class IMDbReader {
                 }
 
 
-
-
             //set akas
             //there are different akas for a unique movie
             while (data.smallerID(akasLine,basicLine))
+                //read the next line if the akas´s id is smaller
                 akasLine=akasReader.readLine();
 
             while (data.sameId(basicLine,akasLine)){
+                //if they have the same id, add the aka to the movie
                 data.setAkas(data.readAkas(akasLine),movie);
                 //read the next line
                 akasLine=akasReader.readLine();
@@ -80,9 +86,8 @@ public class IMDbReader {
 
 
 
-
             //set directors
-            //if the director id is smaller than the movie id, read next
+            //if the director id is smaller than the movie´s id, read next
             if ( data.smallerID(crewLine,basicLine))
                 crewLine = crewReader.readLine();
 
@@ -92,8 +97,6 @@ public class IMDbReader {
                     data.setDirector(crewLine, movie);
                     crewLine = crewReader.readLine();
                 }
-
-
 
 
 
@@ -108,7 +111,6 @@ public class IMDbReader {
 
 
 
-
             return movie;
 
             }
@@ -117,13 +119,24 @@ public class IMDbReader {
     }
 
 
-    //read the first line with info
+
+
+    /**
+     *  read the first line with info
+     * @throws IOException
+     */
     public void initializeLines() throws IOException {
         ratingLine=ratingsReader.readLine();
         akasLine=akasReader.readLine();
         crewLine=crewReader.readLine();
         principalsLine=principalsReader.readLine();
     }
+
+    /**
+     *
+     * @param file, the multipart file
+     * @return a buffered reader
+     */
     public BufferedReader reader(MultipartFile file) {
         try {
             InputStream inputStream = file.getInputStream();
