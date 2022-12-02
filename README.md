@@ -4,6 +4,12 @@
 
 
 Creating an IMDB-like search engine using Elasticsearch
+### Tech stack 
+- Java
+- Maven
+- SpringBoot
+- Elasticsearch
+- Docker
 
 ### Installation
 
