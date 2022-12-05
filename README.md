@@ -1,9 +1,8 @@
 # IMDBproject
 
 ## Empathy Academy: Learning project
+We´ve created an IMDb-like search engine based on different filters using the IMDb's data sets. 
 
-
-Creating an IMDB-like search engine using Elasticsearch
 ### Tech stack 
 - Java
 - Maven
@@ -13,9 +12,9 @@ Creating an IMDB-like search engine using Elasticsearch
 
 ### Installation
 
-1. Clone the repo (provisionally)
+1. Clone the repo 
    ```sh
-   git clone -b New_features https://github.com/mariaffnandez/IMDBproject.git
+   git clone https://github.com/mariaffnandez/IMDBproject.git
 
    ```
    
@@ -40,7 +39,7 @@ Creating an IMDB-like search engine using Elasticsearch
 #### `GET /search`
 It´s used to search movies using filters
 
-Parameters:
+##### Parameters:
 - **genres** (String) - Value of genres to filter by multiple genres. It should be sent separeted by commas (e.g genres=Action,Sci-Fi)  
 - **type** (String) - Value of title type to filter by values. It should be sent in the same way as genres parameter 
 - **maxYear** (Integer) - Max value of start year to filter by 
@@ -57,6 +56,91 @@ Parameters:
 
 Example: `http://localhost:8080/search?maxYear=2022&minYear=2019&genres=Action&sortYear=Asc`
 
+##### Output: 
+Example of a possible output from this endpoint
+
+```json
+{
+    "hits": [
+         {
+            "tconst": "tt08080648",
+            "titleType": "movie",
+            "primaryTitle": "Ring of Silence",
+            "originalTitle": "Ring of Silence",
+            "isAdult": false,
+            "startYear": 2019,
+            "endYear": -1,
+            "runtimeMinutes": 95,
+            "genres": [
+                "Drama"
+            ],
+            "averageRating": 9.0,
+            "numVotes": 509,
+            "akas": [
+                {
+                    "title": "Ring of Silence",
+                    "region": "GB",
+                    "language": "\\N",
+                    "isOriginalTitle": false
+                },
+                {
+                    "title": "Ring of Silence",
+                    "region": "\\N",
+                    "language": "\\N",
+                    "isOriginalTitle": false
+                },
+                {
+                    "title": "Ring of Silence",
+                    "region": "US",
+                    "language": "\\N",
+                    "isOriginalTitle": false
+                }
+            ],
+            "directors": [
+                {
+                    "nconst": "nm5029090"
+                }
+            ],
+            "starring": [
+                {
+                    "name": {
+                        "nconst": "nm4340529"
+                    },
+                    "characters": "\\N"
+                },
+                ...
+            ]
+        },
+        ...
+     ],
+        "facets": [
+        {
+            "type": "value",
+            "facet": "facetgenres",
+            "values": [
+                {
+                    "value": "Drama",
+                    "count": 507
+                },
+                ...
+            ]
+        },
+        {
+            "type": "value",
+            "facet": "facettitleType",
+            "values": [
+                {
+                    "value": "tvEpisode",
+                    "count": 910
+                },
+               ...
+            ]
+        }
+    ]
+}
+        
+
+```
  
 #### `POST /index`
 It´s used to create an index of documents from different files
