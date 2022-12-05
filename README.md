@@ -59,7 +59,7 @@ Example: `http://localhost:8080/search?maxYear=2022&minYear=2019&genres=Action&s
 ##### Output: 
 Example of a possible output from this endpoint
 
-```json
+``` javascript
 {
     "hits": [
          {
@@ -122,7 +122,7 @@ Example of a possible output from this endpoint
                     "value": "Drama",
                     "count": 507
                 },
-                ...
+            ...
             ]
         },
         {
@@ -133,7 +133,7 @@ Example of a possible output from this endpoint
                     "value": "tvEpisode",
                     "count": 910
                 },
-               ...
+           ... 
             ]
         }
     ]
