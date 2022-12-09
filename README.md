@@ -39,7 +39,7 @@ We´ve created an IMDb-like search engine based on different filters using the I
     ```
 - elastic: 
    ```sh
-   mariaffnandez/elastic-repo
+   mariaffnandez/elastic-repo:version1.0
    ```
 
 
