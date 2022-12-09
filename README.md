@@ -32,7 +32,7 @@ We´ve created an IMDb-like search engine based on different filters using the I
    docker-compose down
 
    ```
-#### Image
+#### Images in [DockerHub](https://hub.docker.com/repositories/mariaffnandez)
 - searchAPI: 
    ```sh
    mariaffnandez/imdb-api
