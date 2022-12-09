@@ -35,7 +35,7 @@ We´ve created an IMDb-like search engine based on different filters using the I
 #### Image
 - searchAPI: 
    ```sh
-   mariaffnandez/imdb-api:tagname
+   mariaffnandez/imdb-api:latest
     ```
 
 
