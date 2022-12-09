@@ -35,8 +35,11 @@ We´ve created an IMDb-like search engine based on different filters using the I
 #### Image
 - searchAPI: 
    ```sh
-   mariaffnandez/imdb-api:latest
+   mariaffnandez/imdb-api
     ```
+    - elastic: 
+   ```sh
+   mariaffnandez/elastic-repo
 
 
 
